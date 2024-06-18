@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34616.47
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfOfficeApp.CoreDomain", "src\OutOfOfficeApp.CoreDomain\OutOfOfficeApp.CoreDomain.csproj", "{4767D79E-AD39-4D56-8A6E-D6467E6963B2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutOfOfficeApp.CoreDomain", "src\OutOfOfficeApp.CoreDomain\OutOfOfficeApp.CoreDomain.csproj", "{4767D79E-AD39-4D56-8A6E-D6467E6963B2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfOfficeApp.Infrastructure", "src\OutOfOfficeApp.Infrastructure\OutOfOfficeApp.Infrastructure.csproj", "{B8024E8F-D412-4BB0-9493-BF894B50D0E1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutOfOfficeApp.Infrastructure", "src\OutOfOfficeApp.Infrastructure\OutOfOfficeApp.Infrastructure.csproj", "{B8024E8F-D412-4BB0-9493-BF894B50D0E1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfOfficeApp.Application", "src\OutOfOfficeApp.Application\OutOfOfficeApp.Application.csproj", "{0F2E7B34-A8F1-4C75-894A-27B432201F5F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutOfOfficeApp.Application", "src\OutOfOfficeApp.Application\OutOfOfficeApp.Application.csproj", "{0F2E7B34-A8F1-4C75-894A-27B432201F5F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfOfficeApp.WebUI", "src\OutOfOfficeApp.WebUI\OutOfOfficeApp.WebUI.csproj", "{1C7B6A4A-9BFC-4A01-A84D-545110BCBC76}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OutOfOfficeApp.WebUI", "src\OutOfOfficeApp.WebUI\OutOfOfficeApp.WebUI.csproj", "{A2E08EBE-C7CB-4D29-9FED-2AB96E3F980E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorApp1", "src\BlazorApp1\BlazorApp1.csproj", "{1FD1C496-8504-4CF0-9BD4-D9BCC6F6DB07}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OutOfOfficeApp.API", "OutOfOfficeApp.API\OutOfOfficeApp.API.csproj", "{0A4DE7B7-62E6-4493-B2B1-57D84EC847D6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,14 +31,14 @@ Global
 		{0F2E7B34-A8F1-4C75-894A-27B432201F5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0F2E7B34-A8F1-4C75-894A-27B432201F5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F2E7B34-A8F1-4C75-894A-27B432201F5F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1C7B6A4A-9BFC-4A01-A84D-545110BCBC76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1C7B6A4A-9BFC-4A01-A84D-545110BCBC76}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1C7B6A4A-9BFC-4A01-A84D-545110BCBC76}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1C7B6A4A-9BFC-4A01-A84D-545110BCBC76}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FD1C496-8504-4CF0-9BD4-D9BCC6F6DB07}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FD1C496-8504-4CF0-9BD4-D9BCC6F6DB07}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FD1C496-8504-4CF0-9BD4-D9BCC6F6DB07}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FD1C496-8504-4CF0-9BD4-D9BCC6F6DB07}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A2E08EBE-C7CB-4D29-9FED-2AB96E3F980E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A2E08EBE-C7CB-4D29-9FED-2AB96E3F980E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A2E08EBE-C7CB-4D29-9FED-2AB96E3F980E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A2E08EBE-C7CB-4D29-9FED-2AB96E3F980E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A4DE7B7-62E6-4493-B2B1-57D84EC847D6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A4DE7B7-62E6-4493-B2B1-57D84EC847D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A4DE7B7-62E6-4493-B2B1-57D84EC847D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A4DE7B7-62E6-4493-B2B1-57D84EC847D6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

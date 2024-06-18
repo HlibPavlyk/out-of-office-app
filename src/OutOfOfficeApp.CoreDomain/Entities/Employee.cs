@@ -14,7 +14,6 @@ namespace OutOfOfficeApp.Application.Entities
         public int PositionId { get; set; }
         public int StatusId { get; set; }
         public int PeoplePartnerId { get; set; }
-        public int UserId { get; set; }
         public int OutOfOfficeBalance { get; set; }
         public byte[]? Photo { get; set; }
 
