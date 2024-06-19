@@ -9,11 +9,11 @@ using System.Threading.Tasks;
 
 namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
 {
-    internal class UserConfiguration : IEntityTypeConfiguration<User>
+   /* internal class UserConfiguration : IEntityTypeConfiguration<User>
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-           /*builder.HasKey(e => e.Id);
+           *//*builder.HasKey(e => e.Id);
            
             builder.Property(e => e.Email)
                 .IsRequired()
@@ -22,7 +22,7 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
             builder.HasOne(e => e.Employee)
                 .WithOne(e => e.User)
                 .HasForeignKey<User>(e => e.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);*/
+                .OnDelete(DeleteBehavior.Cascade);*//*
         }
-    }
+    }*/
 }
