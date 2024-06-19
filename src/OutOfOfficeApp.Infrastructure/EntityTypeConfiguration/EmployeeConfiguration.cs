@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OutOfOfficeApp.Application.Entities;
+using OutOfOfficeApp.CoreDomain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,30 +16,31 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
             builder.HasKey(e => e.Id);
 
             builder.Property(e => e.FullName)
-                .IsRequired()
-                .HasMaxLength(100);
+                   .IsRequired()
+                   .HasMaxLength(100);
 
             builder.Property(e => e.Subdivision)
-                .IsRequired();
+                   .IsRequired()
+                   .HasConversion<string>();
 
             builder.Property(e => e.Position)
-                .IsRequired();
+                   .IsRequired()
+                   .HasConversion<string>();
 
             builder.Property(e => e.Status)
-                .IsRequired();
-
-            builder.Property(e => e.PeoplePartner)
-                .IsRequired();
-
-            builder.Property(e => e.OutOfOfficeBalance)
-                .IsRequired();
-
-            builder.Property(e => e.Photo)
-                .HasColumnType("varbinary(max)")
-                .IsRequired(false);
+                   .IsRequired()
+                   .HasConversion<string>();
 
             builder.HasOne(e => e.PeoplePartner)
-                .WithMany();
+                   .WithMany()
+                   .HasForeignKey(e => e.PeoplePartnerId)
+                   .OnDelete(DeleteBehavior.Restrict);
+
+            /*builder.Property(e => e.Photo)
+                   .HasColumnType("varbinary(max)");*/
+
+            builder.Property(e => e.OutOfOfficeBalance)
+                   .IsRequired();
 
         }
     }

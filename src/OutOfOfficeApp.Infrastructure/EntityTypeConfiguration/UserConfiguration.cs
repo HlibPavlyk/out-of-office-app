@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using OutOfOfficeApp.Application.Entities;
+using OutOfOfficeApp.CoreDomain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
     {
         public void Configure(EntityTypeBuilder<User> builder)
         {
-           builder.HasKey(e => e.Id);
+           /*builder.HasKey(e => e.Id);
            
             builder.Property(e => e.Email)
                 .IsRequired()
@@ -22,7 +22,7 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
             builder.HasOne(e => e.Employee)
                 .WithOne(e => e.User)
                 .HasForeignKey<User>(e => e.EmployeeId)
-                .OnDelete(DeleteBehavior.Cascade);
+                .OnDelete(DeleteBehavior.Cascade);*/
         }
     }
 }
