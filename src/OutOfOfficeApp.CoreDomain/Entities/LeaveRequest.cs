@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace OutOfOfficeApp.Application.Entities
+namespace OutOfOfficeApp.CoreDomain.Entities
 {
     public class LeaveRequest
     {
