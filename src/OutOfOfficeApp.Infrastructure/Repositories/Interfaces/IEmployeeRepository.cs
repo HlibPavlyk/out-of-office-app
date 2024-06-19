@@ -10,5 +10,6 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
         Task<Employee?> GetEmployeeWithDetailsAsync(int id);
+        Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsAsync();
     }
 }

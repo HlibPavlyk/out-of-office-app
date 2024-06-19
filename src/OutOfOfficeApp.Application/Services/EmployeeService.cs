@@ -1,4 +1,5 @@
-﻿using OutOfOfficeApp.Application.Services.Interfaces;
+﻿using OutOfOfficeApp.Application.DTO;
+using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
 using OutOfOfficeApp.CoreDomain.Enums;
 using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
@@ -19,24 +20,50 @@ namespace OutOfOfficeApp.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<Employee>?> GetEmployeesAsync()
+        public async Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync()
         {
-            return await _unitOfWork.Employees.GetAllAsync();
+            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsAsync();
+            if (employees == null)
+            {
+                return null;
+            }
+
+            var employeesDTO = employees.Select(e => new EmployeeGetDTO
+            {
+                Id = e.Id,
+                FullName = e.FullName,
+                Subdivision = e.Subdivision,
+                Position = e.Position,
+                Status = e.Status,
+                PeoplePartnerName = e.PeoplePartner.FullName,
+                OutOfOfficeBalance = e.OutOfOfficeBalance
+            });
+            return employeesDTO;
         }
 
-        public async Task AddEmployeeAsync(Employee employee)
+        public async Task AddEmployeeAsync(EmployeePostDTO employee)
         {
-            await _unitOfWork.Employees.AddAsync(employee);
+            var newEmployee = new Employee
+            {
+                FullName = employee.FullName,
+                Subdivision = employee.Subdivision,
+                Position = employee.Position,
+                Status = employee.Status,
+                PeoplePartnerId = employee.PeoplePartnerId,
+                OutOfOfficeBalance = employee.OutOfOfficeBalance
+            };
+
+            await _unitOfWork.Employees.AddAsync(newEmployee);
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task UpdateEmployeeAsync(int id, Employee employee)
+        public async Task UpdateEmployeeAsync(int id, EmployeePostDTO employee)
         {
             var existingEmployee = await _unitOfWork.Employees.GetByIdAsync(id);
 
             if (existingEmployee == null)
             {
-                throw new Exception("Employee not found");
+                throw new ArgumentNullException("Employee not found");
             }
             else
             {
@@ -58,7 +85,7 @@ namespace OutOfOfficeApp.Application.Services
 
             if (employee == null)
             {
-                throw new Exception("Employee not found");
+                throw new ArgumentNullException("Employee not found");
             }
             else
             {
