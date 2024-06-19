@@ -1,19 +1,23 @@
+using OutOfOfficeApp.Application.Services;
+using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.Infrastructure;
+using OutOfOfficeApp.Infrastructure.Repositories;
+using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbConnection(builder.Configuration);
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

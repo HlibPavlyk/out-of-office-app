@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OutOfOfficeApp.Application\OutOfOfficeApp.Application.csproj" />
     <ProjectReference Include="..\OutOfOfficeApp.Infrastructure\OutOfOfficeApp.Infrastructure.csproj" />
   </ItemGroup>
 
