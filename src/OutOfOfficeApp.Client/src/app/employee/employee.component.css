@@ -1,0 +1,23 @@
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:hover {
+  text-decoration: underline;
+}
+
+.btn-group .btn {
+  flex: 1;
+}
+
+.btn-group .btn + .btn {
+  margin-left: 0;
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.w-50 {
+  width: 50%;
+}
