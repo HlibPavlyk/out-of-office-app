@@ -11,5 +11,6 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     {
         Task<Employee?> GetEmployeeWithDetailsAsync(int id);
         Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsAsync();
+        Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsByPageAsync(int page);
     }
 }

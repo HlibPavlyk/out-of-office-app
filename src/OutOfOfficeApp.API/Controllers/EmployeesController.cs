@@ -2,6 +2,7 @@
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
+using System.ComponentModel;
 
 namespace OutOfOfficeApp.API.Controllers
 {
@@ -30,11 +31,11 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetEmployees()
+        public async Task<IActionResult> GetEmployees(int page)
         {
             try
             {
-                var employees = await _employeeService.GetEmployeesAsync();
+                var employees = await _employeeService.GetEmployeesAsync(page);
                 return Ok(employees);
             }
             catch (ArgumentNullException e)
@@ -83,6 +84,20 @@ namespace OutOfOfficeApp.API.Controllers
                 return BadRequest(e.Message);
             }
 
+        }
+
+        [HttpGet("pages")]
+        public async Task<IActionResult> GetAmountOfEmployeePagesAsync()
+        {
+            try
+            {
+                var pageCount = await _employeeService.GetAmountOfEmployeesPagesAsync();
+                return Ok(pageCount);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
         }
     }
 }

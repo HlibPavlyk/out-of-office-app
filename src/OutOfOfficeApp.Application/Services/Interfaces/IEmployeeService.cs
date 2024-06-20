@@ -11,10 +11,11 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync();
+        Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync(int page);
         Task AddEmployeeAsync(EmployeePostDTO employee);
         Task UpdateEmployeeAsync(int id, EmployeePostDTO employee);
         Task DeactivateEmployeeAsync(int id);
+        Task<int> GetAmountOfEmployeesPagesAsync();
     }
 
 }

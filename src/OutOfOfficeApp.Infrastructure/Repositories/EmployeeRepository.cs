@@ -11,12 +11,21 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
 {
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
+        private readonly int pageSize = 2;
         public EmployeeRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsAsync()
         {
             return await _context.Set<Employee>()
                 .Include(e => e.PeoplePartner)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsByPageAsync(int page)
+        {
+            return await _context.Set<Employee>()
+                .Include(e => e.PeoplePartner)
+                .Where(e => e.Id > (page - 1) * pageSize && e.Id <= page * pageSize)
                 .ToListAsync();
         }
 

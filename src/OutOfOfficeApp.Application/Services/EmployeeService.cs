@@ -1,4 +1,6 @@
-﻿using OutOfOfficeApp.Application.DTO;
+﻿using Azure;
+using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
 using OutOfOfficeApp.CoreDomain.Enums;
@@ -14,15 +16,16 @@ namespace OutOfOfficeApp.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly int pageSize = 2;
 
         public EmployeeService(IUnitOfWork unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync()
+        public async Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync(int page)
         {
-            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsAsync();
+            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsByPageAsync(page);
             if (employees == null)
             {
                 return null;
@@ -94,6 +97,17 @@ namespace OutOfOfficeApp.Application.Services
                 await _unitOfWork.CompleteAsync();
             }
             
+        }
+
+        public async Task<int> GetAmountOfEmployeesPagesAsync()
+        {
+            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsAsync();
+            if (employees == null)
+            {
+                return 0;
+            }
+
+            return (int)Math.Ceiling((decimal)employees.Count() / pageSize);
         }
     }
 }
