@@ -1,6 +1,8 @@
 export interface EmployeePostModel{
-    name: string;
-    email: string;
-    position: string;
-    isDeactivated: boolean;
+  fullName: string;
+  subdivision: string;
+  position: string;
+  status: string;
+  peoplePartnerId: number;
+  outOfOfficeBalance: number;
 }

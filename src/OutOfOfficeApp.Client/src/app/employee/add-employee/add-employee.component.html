@@ -1,0 +1,57 @@
+<div class="container mt-4">
+  <h2>Add New Employee</h2>
+  <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="fullName">Full Name</label>
+      <input type="text" id="fullName" class="form-control" formControlName="fullName">
+      <div *ngIf="employeeForm.get('fullName')?.invalid && employeeForm.get('fullName')?.touched" class="text-danger">
+        Full Name is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="subdivision">Subdivision</label>
+      <select id="subdivision" class="form-control" formControlName="subdivision">
+        <option *ngFor="let sub of subdivisions" [value]="sub">{{ sub }}</option>
+      </select>
+      <div *ngIf="employeeForm.get('subdivision')?.invalid && employeeForm.get('subdivision')?.touched" class="text-danger">
+        Subdivision is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="position">Position</label>
+      <select id="position" class="form-control" formControlName="position">
+        <option *ngFor="let pos of positions" [value]="pos">{{ pos }}</option>
+      </select>
+      <div *ngIf="employeeForm.get('position')?.invalid && employeeForm.get('position')?.touched" class="text-danger">
+        Position is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select id="status" class="form-control" formControlName="status">
+        <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+      </select>
+      <div *ngIf="employeeForm.get('status')?.invalid && employeeForm.get('status')?.touched" class="text-danger">
+        Status is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="peoplePartnerId">Partner Id</label>
+      <input type="text" id="peoplePartnerId" class="form-control" formControlName="peoplePartnerId">
+      <div *ngIf="employeeForm.get('peoplePartnerId')?.invalid && employeeForm.get('peoplePartnerId')?.touched" class="text-danger">
+        Partner Name is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="outOfOfficeBalance">Out Of Office Balance</label>
+      <input type="number" id="outOfOfficeBalance" class="form-control" formControlName="outOfOfficeBalance">
+      <div *ngIf="employeeForm.get('outOfOfficeBalance')?.invalid && employeeForm.get('outOfOfficeBalance')?.touched" class="text-danger">
+        Out Of Office Balance must be a positive number.
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary me-3 " [disabled]="employeeForm.invalid">Add Employee</button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>

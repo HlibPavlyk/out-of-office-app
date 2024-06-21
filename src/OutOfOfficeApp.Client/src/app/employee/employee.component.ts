@@ -4,13 +4,15 @@ import {EmployeeService} from "../employee.service";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {EmployeePostModel} from "../../dto/employee-post.model";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-employee',
   standalone: true,
   imports: [
     NgForOf,
-    FormsModule
+    FormsModule,
+    RouterLink
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.css'
@@ -28,23 +30,16 @@ export class EmployeeComponent  implements OnInit {
   constructor(private employeeService: EmployeeService) { }
 
   ngOnInit(): void {
-    this.loadAmountOfPages();
     this.loadEmployees(this.page);
   }
 
   loadEmployees(page:number): void {
-    this.employeeService.getEmployees(page)
-      .subscribe(employees => {
-        this.employees = employees;
+    this.employeeService.getEmployees(page, this.pageSize)
+      .subscribe(pagedResponse => {
+        this.totalPages = pagedResponse.totalPages;
+        this.employees = pagedResponse.items
         this.applyFilters();
       });
-  }
-
-  loadAmountOfPages(): void{
-    this.employeeService.getAmountOfEmployeePages()
-      .subscribe(totalPages => {
-        this.totalPages = totalPages;
-      })
   }
 
   applyFilters(): void {
