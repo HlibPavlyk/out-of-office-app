@@ -1,9 +1,9 @@
 import {Component, OnInit} from '@angular/core';
-import {EmployeeGetModel} from "../../dto/employee-get.model";
+import {EmployeeGetModel} from "./employee-get.model";
 import {EmployeeService} from "../employee.service";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {EmployeePostModel} from "../../dto/employee-post.model";
+import {EmployeePostModel} from "./add-employee/employee-post.model";
 import {RouterLink} from "@angular/router";
 
 @Component({

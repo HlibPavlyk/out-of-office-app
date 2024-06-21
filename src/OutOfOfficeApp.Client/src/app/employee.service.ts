@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {EmployeeGetModel} from "../dto/employee-get.model";
+import {EmployeeGetModel} from "./employee/employee-get.model";
 import {HttpClient, HttpParams} from '@angular/common/http';
-import {EmployeePostModel} from "../dto/employee-post.model";
-import {PagedResponse} from "./employee/paged-response.model";
+import {EmployeePostModel} from "./employee/add-employee/employee-post.model";
+import {PagedResponse} from "./paged-response.model";
 
 @Injectable({
   providedIn: 'root'

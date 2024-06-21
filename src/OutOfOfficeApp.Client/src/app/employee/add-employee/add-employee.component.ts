@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {EmployeePostModel} from "../../../dto/employee-post.model";
+import {EmployeePostModel} from "./employee-post.model";
 import {EmployeeService} from "../../employee.service";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
