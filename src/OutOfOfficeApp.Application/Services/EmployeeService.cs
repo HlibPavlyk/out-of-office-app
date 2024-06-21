@@ -4,6 +4,7 @@ using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
 using OutOfOfficeApp.CoreDomain.Enums;
+using OutOfOfficeApp.Infrastructure.DTO;
 using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,15 @@ namespace OutOfOfficeApp.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync(int page)
+        public async Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize)
         {
-            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsByPageAsync(page);
+            var employees = await _unitOfWork.Employees.GetPagedEmployeesWithDetailsAsync(pageNumber, pageSize);
             if (employees == null)
             {
                 return null;
             }
 
-            var employeesDTO = employees.Select(e => new EmployeeGetDTO
+            var employeeDTOs = employees.Items.Select(e => new EmployeeGetDTO
             {
                 Id = e.Id,
                 FullName = e.FullName,
@@ -40,8 +41,15 @@ namespace OutOfOfficeApp.Application.Services
                 Status = e.Status,
                 PeoplePartnerName = e.PeoplePartner.FullName,
                 OutOfOfficeBalance = e.OutOfOfficeBalance
-            });
-            return employeesDTO;
+            }).ToList();
+
+            var response = new PagedResponse<EmployeeGetDTO>
+            {
+                Items = employeeDTOs,
+                TotalPages = employees.TotalPages
+            };
+
+            return response;
         }
 
         public async Task AddEmployeeAsync(EmployeePostDTO employee)
@@ -98,16 +106,6 @@ namespace OutOfOfficeApp.Application.Services
             }
             
         }
-
-        public async Task<int> GetAmountOfEmployeesPagesAsync()
-        {
-            var employees = await _unitOfWork.Employees.GetAllEmployeesWithDetailsAsync();
-            if (employees == null)
-            {
-                return 0;
-            }
-
-            return (int)Math.Ceiling((decimal)employees.Count() / pageSize);
-        }
+       
     }
 }

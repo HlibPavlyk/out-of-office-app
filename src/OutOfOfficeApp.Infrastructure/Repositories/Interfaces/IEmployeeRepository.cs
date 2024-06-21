@@ -1,4 +1,5 @@
 ﻿using OutOfOfficeApp.CoreDomain.Entities;
+using OutOfOfficeApp.Infrastructure.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +10,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
 {
     public interface IEmployeeRepository : IGenericRepository<Employee>
     {
-        Task<Employee?> GetEmployeeWithDetailsAsync(int id);
-        Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsAsync();
-        Task<IEnumerable<Employee>?> GetAllEmployeesWithDetailsByPageAsync(int page);
+        Task <Employee?> GetEmployeeWithDetailsAsync(int id);
+        Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize);
     }
 }

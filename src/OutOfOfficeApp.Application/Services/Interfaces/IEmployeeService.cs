@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.CoreDomain.Entities;
+using OutOfOfficeApp.Infrastructure.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,10 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<IEnumerable<EmployeeGetDTO>?> GetEmployeesAsync(int page);
+        Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize);
         Task AddEmployeeAsync(EmployeePostDTO employee);
         Task UpdateEmployeeAsync(int id, EmployeePostDTO employee);
         Task DeactivateEmployeeAsync(int id);
-        Task<int> GetAmountOfEmployeesPagesAsync();
     }
 
 }

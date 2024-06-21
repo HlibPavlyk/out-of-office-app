@@ -31,16 +31,12 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
         [HttpGet]
-        public async Task<IActionResult> GetEmployees(int page)
+        public async Task<IActionResult> GetEmployees([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var employees = await _employeeService.GetEmployeesAsync(page);
+                var employees = await _employeeService.GetEmployeesAsync(pageNumber, pageSize);
                 return Ok(employees);
-            }
-            catch (ArgumentNullException e)
-            {
-                return NotFound(e.Message);
             }
             catch (Exception e)
             {
@@ -86,18 +82,5 @@ namespace OutOfOfficeApp.API.Controllers
 
         }
 
-        [HttpGet("pages")]
-        public async Task<IActionResult> GetAmountOfEmployeePagesAsync()
-        {
-            try
-            {
-                var pageCount = await _employeeService.GetAmountOfEmployeesPagesAsync();
-                return Ok(pageCount);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
     }
 }
