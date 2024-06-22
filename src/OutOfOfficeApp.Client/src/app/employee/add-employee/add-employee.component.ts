@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {EmployeePostModel} from "./employee-post.model";
 import {EmployeeService} from "../../employee.service";
 import {Router} from "@angular/router";
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
@@ -22,6 +21,7 @@ export class AddEmployeeComponent {
   statuses: string[] = ['Active', 'Inactive'];
   positions: string[] = ['Employee', 'HRManager', 'ProjectManager', 'Administrator'];
   subdivisions: string[] = ['Development', 'Design', 'DevOps', 'Management'];
+  errorMessage = '';
 
   constructor(
     private fb: FormBuilder,
@@ -39,18 +39,26 @@ export class AddEmployeeComponent {
   }
 
   onCancel() {
-    this.router.navigate(['']).then(r => console.log('returned to employees list'));
+    this.router.navigate([''])
+      .then(r => console.log('returned to employees list'));
   }
 
   onSubmit() {
     if (this.employeeForm.valid) {
       const employeeData = this.employeeForm.value;
-      this.employeeService.addEmployee(employeeData).subscribe(() => {
-        this.router.navigate(['']).then(r => console.log('navigated to employees list'));
+      this.employeeService.addEmployee(employeeData)
+        .subscribe({
+        next: () => {
+          this.router.navigate([''])
+            .then(r => console.log('added new employee'));
+        },
+        error: (err) => {
+          this.errorMessage = `Error occurred (${err.status})`;
+          console.error(`${this.errorMessage} - ${err.message}`);
+        }
       });
     } else {
       console.log('Form is not valid');
-      // Додаткова логіка для обробки невалідної форми, якщо необхідно
     }
   }
 }

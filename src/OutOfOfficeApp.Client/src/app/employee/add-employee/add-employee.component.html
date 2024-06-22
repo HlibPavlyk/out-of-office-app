@@ -1,5 +1,8 @@
 <div class="container mt-4">
   <h2>Add New Employee</h2>
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
   <form [formGroup]="employeeForm" (ngSubmit)="onSubmit()">
     <div class="form-group">
       <label for="fullName">Full Name</label>
