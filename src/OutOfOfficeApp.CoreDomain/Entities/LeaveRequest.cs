@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OutOfOfficeApp.CoreDomain.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,14 +11,12 @@ namespace OutOfOfficeApp.CoreDomain.Entities
     {
         public int Id { get; set; }
         public int EmployeeId { get; set; }
-        public int AbsenceReasonId { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public AbsenceReason AbsenceReason { get; set; }
+        public DateOnly StartDate { get; set; }
+        public DateOnly EndDate { get; set; }
         public string? Comment { get; set; }
-        public int StatusId { get; set; }
+        public LeaveRequestStatus Status { get; set; }
 
         public Employee Employee { get; set; }
-        public Option AbsenceReason { get; set; }
-        public Option Status { get; set; }
     }
 }

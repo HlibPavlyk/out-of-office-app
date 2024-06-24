@@ -34,10 +34,7 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
             builder.HasOne(e => e.PeoplePartner)
                    .WithMany()
                    .HasForeignKey(e => e.PeoplePartnerId)
-                   .OnDelete(DeleteBehavior.Restrict);
-
-            /*builder.Property(e => e.Photo)
-                   .HasColumnType("varbinary(max)");*/
+                   .OnDelete(DeleteBehavior.NoAction);
 
             builder.Property(e => e.OutOfOfficeBalance)
                    .IsRequired();
