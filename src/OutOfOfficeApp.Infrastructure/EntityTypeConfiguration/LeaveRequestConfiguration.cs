@@ -19,7 +19,7 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
             builder.HasOne(lr => lr.Employee)
                    .WithMany()
                    .HasForeignKey(lr => lr.EmployeeId)
-                   .OnDelete(DeleteBehavior.NoAction);
+                   .OnDelete(DeleteBehavior.Restrict);
 
             builder.Property(lr => lr.AbsenceReason)
                    .IsRequired()
