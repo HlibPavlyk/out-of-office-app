@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace OutOfOfficeApp.CoreDomain.Enums
 {
-    public enum EmployeeStatus
+    public enum ApprovalRequestStatus
     {
-        Active,
-        Inactive
+        New,
+        Approved,
+        Rejected
     }
 }

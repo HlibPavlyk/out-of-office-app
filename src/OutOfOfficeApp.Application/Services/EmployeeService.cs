@@ -111,7 +111,7 @@ namespace OutOfOfficeApp.Application.Services
             }
             else
             {
-                employee.Status = EmployeeStatus.Inactive;
+                employee.Status = ActiveStatus.Inactive;
                 _unitOfWork.Employees.Update(employee);
                 await _unitOfWork.CompleteAsync();
             }
