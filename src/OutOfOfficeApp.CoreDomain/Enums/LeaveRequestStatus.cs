@@ -9,7 +9,7 @@ namespace OutOfOfficeApp.CoreDomain.Enums
     public enum LeaveRequestStatus
     {
         New,
-        Submited,
+        Submitted,
         Canceled
     }
 }
