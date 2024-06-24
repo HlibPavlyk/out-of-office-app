@@ -17,7 +17,6 @@ namespace OutOfOfficeApp.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
-        private readonly int pageSize = 2;
 
         public EmployeeService(IUnitOfWork unitOfWork)
         {
@@ -39,7 +38,11 @@ namespace OutOfOfficeApp.Application.Services
                 Subdivision = e.Subdivision,
                 Position = e.Position,
                 Status = e.Status,
-                PeoplePartnerName = e.PeoplePartner.FullName,
+                PeoplePartner = new PeoplePartnerDTO
+                {
+                    Id = e.PeoplePartner.Id,
+                    FullName = e.PeoplePartner.FullName
+                },
                 OutOfOfficeBalance = e.OutOfOfficeBalance
             }).ToList();
 
@@ -52,8 +55,16 @@ namespace OutOfOfficeApp.Application.Services
             return response;
         }
 
+
+
         public async Task AddEmployeeAsync(EmployeePostDTO employee)
         {
+            var partner = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(employee.PeoplePartnerId);
+            if(partner == null)
+            {
+                throw new InvalidOperationException("Employee with that PeoplePartnerId not found");
+            }
+
             var newEmployee = new Employee
             {
                 FullName = employee.FullName,
@@ -106,6 +117,31 @@ namespace OutOfOfficeApp.Application.Services
             }
             
         }
-       
+
+        public async Task<EmployeeGetDTO> GetEmployeeByIdAsync(int id)
+        {
+            var employee = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(id);
+            if (employee == null)
+            {
+                throw new ArgumentNullException("Employee not found");
+            }
+
+            var employeeDTO = new EmployeeGetDTO
+            {
+                Id = employee.Id,
+                FullName = employee.FullName,
+                Subdivision = employee.Subdivision,
+                Position = employee.Position,
+                Status = employee.Status,
+                PeoplePartner = new PeoplePartnerDTO
+                {
+                    Id = employee.PeoplePartner.Id,
+                    FullName = employee.PeoplePartner.FullName
+                },
+                OutOfOfficeBalance = employee.OutOfOfficeBalance
+            };
+
+            return employeeDTO;
+        }
     }
 }

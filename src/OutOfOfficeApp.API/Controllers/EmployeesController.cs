@@ -44,6 +44,23 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
 
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetEmployee(int id)
+        {
+            try
+            {
+                var employee = await _employeeService.GetEmployeeByIdAsync(id);
+                return Ok(employee);
+            }
+            catch (ArgumentNullException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateEmployee(int id, EmployeePostDTO employee)
