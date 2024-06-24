@@ -11,8 +11,8 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface ILeaveRequestService
     {
-        Task<PagedResponse<LeaveRequestGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize);
-        Task<LeaveRequestGetDTO> GetEmployeeByIdAsync(int id);
+        Task<PagedResponse<LeaveRequestGetDTO>?> GetLeaveRequestsAsync(int pageNumber, int pageSize);
+        Task<LeaveRequestGetDTO> GetLeaveRequestByIdAsync(int id);
         Task AddLeaveRequestAsync(LeaveRequestPostDTO employee);
         Task UpdateLeaveRequestAsync(int id, LeaveRequestPostDTO employee);
         Task CancelLeaveRequestAsync(int id);

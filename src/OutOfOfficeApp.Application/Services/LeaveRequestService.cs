@@ -16,7 +16,7 @@ namespace OutOfOfficeApp.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<LeaveRequestGetDTO> GetEmployeeByIdAsync(int id)
+        public async Task<LeaveRequestGetDTO> GetLeaveRequestByIdAsync(int id)
         {
             var request = await _unitOfWork.LeaveRequests.GetLeaveRequestWithDetailsAsync(id);
             if (request == null)
@@ -42,7 +42,7 @@ namespace OutOfOfficeApp.Application.Services
             return requestDTO;
         }
 
-        public async Task<PagedResponse<LeaveRequestGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<LeaveRequestGetDTO>?> GetLeaveRequestsAsync(int pageNumber, int pageSize)
         {
             var requests = await _unitOfWork.LeaveRequests.GetPagedLeaveRequestsWithDetailsAsync(pageNumber, pageSize);
             if (requests == null)
