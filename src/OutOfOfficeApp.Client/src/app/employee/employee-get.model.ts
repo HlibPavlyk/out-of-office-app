@@ -5,7 +5,7 @@ export interface EmployeeGetModel{
     fullName: string;
     subdivision: string;
     position: string;
-    status: boolean;
+    status: string;
     peoplePartner: PeoplePartnerModel;
     outOfOfficeBalance: number;
 }

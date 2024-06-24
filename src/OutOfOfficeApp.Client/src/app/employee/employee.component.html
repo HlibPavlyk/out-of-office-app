@@ -1,5 +1,4 @@
 <div class="container mt-4">
-  <!-- Search Input -->
   <div class="row mb-3">
     <div class="col-md-6">
       <input type="text" [(ngModel)]="search" (ngModelChange)="onSearchChange($event)" class="form-control"
@@ -10,20 +9,44 @@
     </div>
   </div>
 
-  <!-- Actions -->
-
-
-  <!-- Table -->
   <table class="table table-striped table-bordered">
     <thead class="thead-dark">
     <tr>
-      <th (click)="onSortChange('id')" class="sortable">ID</th>
-      <th (click)="onSortChange('fullName')" class="sortable">Full Name</th>
-      <th (click)="onSortChange('subdivision')" class="sortable">Subdivision</th>
-      <th (click)="onSortChange('position')" class="sortable">Position</th>
-      <th (click)="onSortChange('status')" class="sortable">Status</th>
-      <th (click)="onSortChange('partnerName')" class="sortable">Partner Name</th>
-      <th (click)="onSortChange('balance')" class="sortable">OOO Balance</th>
+      <th (click)="onSortChange('id')" class="sortable">
+        ID
+        <i *ngIf="sortColumn === 'id'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('fullName')" class="sortable">
+        Full Name
+        <i *ngIf="sortColumn === 'fullName'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('subdivision')" class="sortable">
+        Subdivision
+        <i *ngIf="sortColumn === 'subdivision'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('position')" class="sortable">
+        Position
+        <i *ngIf="sortColumn === 'position'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('status')" class="sortable">
+        Status
+        <i *ngIf="sortColumn === 'status'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('partnerName')" class="sortable">
+        Partner Name
+        <i *ngIf="sortColumn === 'partnerName'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
+      <th (click)="onSortChange('balance')" class="sortable">
+        OOO Balance
+        <i *ngIf="sortColumn === 'balance'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
+        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
+      </th>
       <th>Actions</th>
     </tr>
     </thead>
@@ -46,7 +69,6 @@
     </tbody>
   </table>
 
-  <!-- Pagination Buttons -->
   <div class="d-flex flex-column align-items-center mt-3">
     <div class="btn-group w-25">
       <button (click)="onPageChange(page - 1)" [disabled]="page === 1" class="btn btn-primary w-100">

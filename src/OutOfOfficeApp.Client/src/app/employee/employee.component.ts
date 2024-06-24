@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {EmployeeGetModel} from "./employee-get.model";
 import {EmployeeService} from "../employee.service";
-import {NgForOf} from "@angular/common";
+import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 
@@ -11,7 +11,9 @@ import {Router, RouterLink} from "@angular/router";
   imports: [
     NgForOf,
     FormsModule,
-    RouterLink
+    RouterLink,
+    NgClass,
+    NgIf
   ],
   templateUrl: './employee.component.html',
   styleUrl: './employee.component.css'
@@ -54,11 +56,12 @@ export class EmployeeComponent  implements OnInit {
         const isAsc = this.sortOrder === 'asc';
         switch (this.sortColumn) {
           case 'id': return compare(a.id, b.id, isAsc);
-          case 'fullName': return compare(a.fullName, b.fullName, isAsc);
-          case 'subdivision': return compare(a.subdivision, b.subdivision, isAsc);
-          case 'position': return compare(a.position, b.position, isAsc);
-          case 'status': return compare(a.status, b.status, isAsc);
-          case 'partnerName': return compare(a.peoplePartner, b.peoplePartner, isAsc);
+          case 'fullName': return compare(a.fullName.toLowerCase(), b.fullName.toLowerCase(), isAsc);
+          case 'subdivision': return compare(a.subdivision.toLowerCase(), b.subdivision.toLowerCase(), isAsc);
+          case 'position': return compare(a.position.toLowerCase(), b.position.toLowerCase(), isAsc);
+          case 'status': return compare(a.status.toLowerCase(), b.status.toLowerCase(), isAsc);
+          case 'partnerName': return compare(a.peoplePartner.fullName.toLowerCase(),
+            b.peoplePartner.fullName.toLowerCase(), isAsc);
           case 'balance': return compare(a.outOfOfficeBalance, b.outOfOfficeBalance, isAsc);
           default: return 0;
         }
