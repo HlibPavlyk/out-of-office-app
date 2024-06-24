@@ -12,7 +12,6 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
 {
     public class EmployeeRepository : GenericRepository<Employee>, IEmployeeRepository
     {
-        private readonly int pageSize = 2;
         public EmployeeRepository(ApplicationDbContext context) : base(context) { }
 
         public async Task<Employee?> GetEmployeeWithDetailsAsync(int id)
