@@ -14,7 +14,7 @@ namespace OutOfOfficeApp.Application.DTO
         public Subdivision Subdivision { get; set; }
         public Position Position { get; set; }
         public ActiveStatus Status { get; set; }
-        public PeoplePartnerDTO PeoplePartner { get; set; }
+        public EmployeeNameDTO PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
     }
 }

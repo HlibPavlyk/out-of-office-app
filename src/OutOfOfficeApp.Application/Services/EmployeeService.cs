@@ -38,7 +38,7 @@ namespace OutOfOfficeApp.Application.Services
                 Subdivision = e.Subdivision,
                 Position = e.Position,
                 Status = e.Status,
-                PeoplePartner = new PeoplePartnerDTO
+                PeoplePartner = new EmployeeNameDTO
                 {
                     Id = e.PeoplePartner.Id,
                     FullName = e.PeoplePartner.FullName
@@ -133,7 +133,7 @@ namespace OutOfOfficeApp.Application.Services
                 Subdivision = employee.Subdivision,
                 Position = employee.Position,
                 Status = employee.Status,
-                PeoplePartner = new PeoplePartnerDTO
+                PeoplePartner = new EmployeeNameDTO
                 {
                     Id = employee.PeoplePartner.Id,
                     FullName = employee.PeoplePartner.FullName

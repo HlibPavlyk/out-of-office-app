@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace OutOfOfficeApp.Application.DTO
 {
-    public class PeoplePartnerDTO
+    public class EmployeeNameDTO
     {
         public int Id { get; set; }
         public string FullName { get; set; }
