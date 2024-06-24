@@ -3,8 +3,7 @@ import {EmployeeGetModel} from "./employee-get.model";
 import {EmployeeService} from "../employee.service";
 import {NgForOf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
-import {EmployeePostModel} from "./add-employee/employee-post.model";
-import {RouterLink} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-employee',
@@ -24,10 +23,10 @@ export class EmployeeComponent  implements OnInit {
   sortColumn = '';
   sortOrder = 'asc';
   page = 1;
-  pageSize = 2;
+  pageSize = 5;
   totalPages = 0;
 
-  constructor(private employeeService: EmployeeService) { }
+  constructor(private employeeService: EmployeeService, private router:Router ) { }
 
   ngOnInit(): void {
     this.loadEmployees(this.page);
@@ -46,7 +45,8 @@ export class EmployeeComponent  implements OnInit {
     this.filteredEmployees = this.employees;
 
     if (this.search) {
-      this.filteredEmployees = this.filteredEmployees.filter(e => e.fullName.toLowerCase().includes(this.search.toLowerCase()));
+      this.filteredEmployees = this.filteredEmployees.filter(e => e.fullName.toLowerCase()
+        .includes(this.search.toLowerCase()));
     }
 
     if (this.sortColumn) {
@@ -58,6 +58,8 @@ export class EmployeeComponent  implements OnInit {
           case 'subdivision': return compare(a.subdivision, b.subdivision, isAsc);
           case 'position': return compare(a.position, b.position, isAsc);
           case 'status': return compare(a.status, b.status, isAsc);
+          case 'partnerName': return compare(a.peoplePartner, b.peoplePartner, isAsc);
+          case 'balance': return compare(a.outOfOfficeBalance, b.outOfOfficeBalance, isAsc);
           default: return 0;
         }
       });
@@ -82,13 +84,9 @@ export class EmployeeComponent  implements OnInit {
       }
   }
 
-
-  addEmployee(employee: EmployeePostModel): void {
-   // this.employeeService.addEmployee(employee).subscribe(() => this.loadEmployees());
-  }
-
-  updateEmployee(id: number, employee: EmployeePostModel): void {
-   // this.employeeService.updateEmployee(id, employee).subscribe(() => this.loadEmployees());
+  editEmployee(id: number): void {
+    this.router.navigate(['/edit-employee/', id])
+      .then(r => console.log('navigated to edit-employee'));
   }
 
   deactivateEmployee(id: number): void {

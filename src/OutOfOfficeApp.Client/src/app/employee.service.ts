@@ -21,12 +21,16 @@ export class EmployeeService {
     return this.http.get<PagedResponse<EmployeeGetModel>>(this.apiUrl, { params });
   }
 
+  getEmployee(id: string): Observable<EmployeeGetModel> {
+    return this.http.get<EmployeeGetModel>(`${this.apiUrl}/${id}`);
+  }
+
+
   addEmployee(employee: EmployeePostModel): Observable<void> {
     return this.http.post<void>(this.apiUrl, employee);
   }
 
-
-  updateEmployee(id: number, employee: EmployeePostModel): Observable<void> {
+  editEmployee(id: number, employee: EmployeePostModel): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}`, employee);
   }
 
