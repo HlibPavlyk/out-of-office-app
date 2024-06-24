@@ -9,6 +9,9 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     public interface IUnitOfWork : IDisposable
     {
         IEmployeeRepository Employees { get; }
+        ILeaveRequestRepository LeaveRequests { get; }
+        IApprovalRequestRepository ApprovalRequests { get; }
+        IProjectRepository Projects { get; }
         Task CompleteAsync();
     }
 }

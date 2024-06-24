@@ -11,11 +11,17 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
     {
         private readonly ApplicationDbContext _context;
         public IEmployeeRepository Employees { get; }
+        public ILeaveRequestRepository LeaveRequests { get; }
+        public IApprovalRequestRepository ApprovalRequests { get; }
+        public IProjectRepository Projects { get; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
             _context = context;
             Employees = new EmployeeRepository(_context);
+            LeaveRequests = new LeaveRequestRepository(_context);
+            ApprovalRequests = new ApprovalRequestRepository(_context);
+            Projects = new ProjectRepository(_context);
         }
 
         public async Task CompleteAsync()
