@@ -76,6 +76,11 @@ namespace OutOfOfficeApp.Application.Services
 
         public async  Task AddLeaveRequestAsync(LeaveRequestPostDTO request)
         {
+            if(request.StartDate > request.EndDate)
+            {
+                throw new InvalidOperationException("Start date cannot be after end date");
+            }
+
             var issuer = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(request.EmployeeId);
             if (issuer == null)
             {

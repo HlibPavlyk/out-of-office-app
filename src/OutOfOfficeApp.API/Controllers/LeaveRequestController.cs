@@ -19,6 +19,24 @@ namespace OutOfOfficeApp.API.Controllers
             _leaveRequestService = leaveRequestService;
         }
 
+        [HttpPost]
+        public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestPostDTO leaveRequest)
+        {
+            try
+            {
+                await _leaveRequestService.AddLeaveRequestAsync(leaveRequest);
+                return Created();
+            }
+            catch (ArgumentNullException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetLeaveRequests([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
@@ -44,20 +62,6 @@ namespace OutOfOfficeApp.API.Controllers
             catch (ArgumentNullException e)
             {
                 return NotFound(e.Message);
-            }
-            catch (Exception e)
-            {
-                return BadRequest(e.Message);
-            }
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestPostDTO leaveRequest)
-        {
-            try
-            {
-                await _leaveRequestService.AddLeaveRequestAsync(leaveRequest);
-                return Created();
             }
             catch (Exception e)
             {
@@ -112,10 +116,6 @@ namespace OutOfOfficeApp.API.Controllers
             catch (ArgumentNullException e)
             {
                 return NotFound(e.Message);
-            }
-            catch (InvalidOperationException e)
-            {
-                return BadRequest(e.Message);
             }
             catch (Exception e)
             {

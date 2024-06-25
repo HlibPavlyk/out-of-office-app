@@ -1,3 +1,4 @@
+using OutOfOfficeApp.Application;
 using OutOfOfficeApp.Application.Services;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.Infrastructure;
@@ -11,6 +12,7 @@ builder.Services.AddControllers()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        options.JsonSerializerOptions.Converters.Add(new DateOnlyJsonConverter());
     });
 
 builder.Services.AddEndpointsApiExplorer();
@@ -20,6 +22,7 @@ builder.Services.AddDbConnection(builder.Configuration);
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
 
 builder.Services.AddCors(options =>
 {
