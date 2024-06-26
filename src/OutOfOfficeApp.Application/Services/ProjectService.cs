@@ -1,4 +1,5 @@
-﻿using OutOfOfficeApp.Application.DTO;
+﻿using Azure.Core;
+using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
 using OutOfOfficeApp.CoreDomain.Enums;
@@ -81,10 +82,19 @@ namespace OutOfOfficeApp.Application.Services
 
         public async Task AddProjectAsync(ProjectPostDTO project)
         {
-            var projectManager = await _unitOfWork.Projects.GetProjectWithDetailsAsync(project.ProjectManagerId);
+            if (project.EndDate != null && project.StartDate > project.EndDate)
+            {
+                throw new InvalidOperationException("Start date cannot be after end date");
+            }
+
+            var projectManager = await _unitOfWork.Employees.GetByIdAsync(project.ProjectManagerId);
             if (projectManager == null)
             {
                 throw new InvalidOperationException("Employee with that ProjectManagerId not found");
+            }
+            if (projectManager.Status == ActiveStatus.Inactive ||projectManager.Position != Position.ProjectManager)
+            {
+                throw new InvalidOperationException("Employee is not Active or is not a Project Manager");
             }
 
             var newProject = new Project
@@ -130,12 +140,15 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new ArgumentNullException("Project not found");
             }
-            else
+            if(project.Status == ActiveStatus.Inactive)
             {
-                project.Status = ActiveStatus.Inactive;
-                _unitOfWork.Projects.Update(project);
-                await _unitOfWork.CompleteAsync();
+                throw new InvalidOperationException("Project is already inactive");
             }
 
+            project.Status = ActiveStatus.Inactive;
+            _unitOfWork.Projects.Update(project);
+            await _unitOfWork.CompleteAsync();
+
         }
+    }
 }
