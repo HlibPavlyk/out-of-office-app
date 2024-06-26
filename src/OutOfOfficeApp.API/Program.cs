@@ -23,6 +23,7 @@ builder.Services.AddDbConnection(builder.Configuration);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
 builder.Services.AddScoped<ILeaveRequestService, LeaveRequestService>();
+builder.Services.AddScoped<IApprovalRequestService, ApprovalRequestService>();
 
 builder.Services.AddCors(options =>
 {

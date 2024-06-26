@@ -13,10 +13,18 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
     public class ApprovalRequestRepository : GenericRepository<ApprovalRequest>, IApprovalRequestRepository
     {
         public ApprovalRequestRepository(ApplicationDbContext context) : base(context) { }
+
+        public async Task<ApprovalRequest?> GetApprovalRequestByLeaveRequestIdAsync(int id)
+        {
+            return await _context.ApprovalRequests
+                .FirstOrDefaultAsync(ar => ar.LeaveRequestId == id);
+        }
+
         public async Task<ApprovalRequest?> GetApprovalRequestWithDetailsAsync(int id)
         {
             return await _context.ApprovalRequests
                 .Include(ar => ar.LeaveRequest)
+                    .ThenInclude(lr => lr.Employee)
                 .Include(ar => ar.Approver)
                 .FirstOrDefaultAsync(ar => ar.Id == id);
         }

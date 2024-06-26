@@ -12,7 +12,7 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
     {
         Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(int pageNumber, int pageSize);
         Task<ApprovalRequestGetDTO> GetApprovalRequestByIdAsync(int id);
-        Task AddApprovalRequestAsync(ApprovalRequestPostDTO request);
+        Task AddApprovalRequestAsync(int leaveRequestId);
         Task RejectApprovalRequestAsync(int id, int issuerId);
         Task ApproveApprovalRequestAsync(int id, int issuerId);
     }

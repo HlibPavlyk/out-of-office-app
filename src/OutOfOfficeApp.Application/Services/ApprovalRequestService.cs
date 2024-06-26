@@ -70,7 +70,7 @@ namespace OutOfOfficeApp.Application.Services
             return response;
         }
 
-        public async Task AddApprovalRequestAsync(ApprovalRequestPostDTO request)
+        public async Task AddApprovalRequestAsync(int leaveRequestId)
         {
             var relatedApproverId = await _unitOfWork.Employees.GetHRManagerIdWithLeastActiveRequestsAsync();
             if (relatedApproverId == null)
@@ -81,9 +81,8 @@ namespace OutOfOfficeApp.Application.Services
             var newApprovalRequest = new ApprovalRequest
             {
                 ApproverId = relatedApproverId.Value,
-                LeaveRequestId = request.LeaveRequestId,
-                Status = ApprovalRequestStatus.New,
-                Comment = request.Comment
+                LeaveRequestId = leaveRequestId,
+                Status = ApprovalRequestStatus.New
             };
 
             await _unitOfWork.ApprovalRequests.AddAsync(newApprovalRequest);

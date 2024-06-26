@@ -10,10 +10,12 @@ namespace OutOfOfficeApp.Application.Services
     public class LeaveRequestService : ILeaveRequestService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IApprovalRequestService _approvalRequestService;
 
-        public LeaveRequestService(IUnitOfWork unitOfWork)
+        public LeaveRequestService(IUnitOfWork unitOfWork, IApprovalRequestService approvalRequestService)
         {
             _unitOfWork = unitOfWork;
+            _approvalRequestService = approvalRequestService;
         }
 
         public async Task<LeaveRequestGetDTO> GetLeaveRequestByIdAsync(int id)
@@ -127,15 +129,6 @@ namespace OutOfOfficeApp.Application.Services
 
         public async Task SubmitLeaveRequestAsync(int id)
         {
-            await ChangeLeaveRequestStatusAsync(id, LeaveRequestStatus.Submitted);
-        }
-        public async Task CancelLeaveRequestAsync(int id)
-        {
-            await ChangeLeaveRequestStatusAsync(id, LeaveRequestStatus.Canceled);
-        }
-
-        private async Task ChangeLeaveRequestStatusAsync(int id, LeaveRequestStatus statusToChange)
-        {
             var existingLeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id);
 
             if (existingLeaveRequest == null)
@@ -149,12 +142,50 @@ namespace OutOfOfficeApp.Application.Services
             }
             else
             {
-                existingLeaveRequest.Status = statusToChange;
+                existingLeaveRequest.Status = LeaveRequestStatus.Submitted;
+
+                _unitOfWork.LeaveRequests.Update(existingLeaveRequest);
+                await _unitOfWork.CompleteAsync();
+            }
+
+            await _approvalRequestService.AddApprovalRequestAsync(id);
+        }
+        public async Task CancelLeaveRequestAsync(int id)
+        {
+            var existingLeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id);
+
+            if (existingLeaveRequest == null)
+            {
+                throw new ArgumentNullException("Leave requests not found");
+            }
+
+            if (existingLeaveRequest.Status == LeaveRequestStatus.Canceled)
+            {
+                throw new InvalidOperationException("Cannot cancel leave request that is already canceled");
+            }
+            else
+            {
+                if (existingLeaveRequest.Status == LeaveRequestStatus.Submitted)
+                {
+                    var existingApprovalRequest = await _unitOfWork.ApprovalRequests
+                        .GetApprovalRequestByLeaveRequestIdAsync(id);
+
+                    if (existingApprovalRequest == null)
+                    {
+                        throw new ArgumentNullException("Approval request not found");
+                    }
+
+                    existingApprovalRequest.Status = ApprovalRequestStatus.Rejected;
+
+                    _unitOfWork.ApprovalRequests.Update(existingApprovalRequest);
+                    await _unitOfWork.CompleteAsync();
+                }
+
+                existingLeaveRequest.Status = LeaveRequestStatus.Canceled;
 
                 _unitOfWork.LeaveRequests.Update(existingLeaveRequest);
                 await _unitOfWork.CompleteAsync();
             }
         }
-
     }
 }

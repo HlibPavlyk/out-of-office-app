@@ -11,6 +11,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     public interface IApprovalRequestRepository : IGenericRepository<ApprovalRequest>
     {
         Task<ApprovalRequest?> GetApprovalRequestWithDetailsAsync(int id);
+        Task<ApprovalRequest?> GetApprovalRequestByLeaveRequestIdAsync(int id);
         Task<PagedResponse<ApprovalRequest>?> GetPagedApprovalRequestsWithDetailsAsync(int pageNumber, int pageSize);
     }
 }
