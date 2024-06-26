@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="6.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\OutOfOfficeApp.CoreDomain\OutOfOfficeApp.CoreDomain.csproj" />
     <ProjectReference Include="..\OutOfOfficeApp.Infrastructure\OutOfOfficeApp.Infrastructure.csproj" />
   </ItemGroup>

@@ -15,6 +15,10 @@ namespace OutOfOfficeApp.Application
 
         public override DateOnly Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
+            if (reader.TokenType != JsonTokenType.String)
+            {
+                throw new JsonException();
+            }
             return DateOnly.ParseExact(reader.GetString(), Format, CultureInfo.InvariantCulture);
         }
 

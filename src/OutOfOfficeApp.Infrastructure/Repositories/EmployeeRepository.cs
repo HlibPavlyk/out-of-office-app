@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using OutOfOfficeApp.CoreDomain.Entities;
+using OutOfOfficeApp.CoreDomain.Enums;
 using OutOfOfficeApp.Infrastructure.DTO;
 using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
 using System;
@@ -14,11 +15,32 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
     {
         public EmployeeRepository(ApplicationDbContext context) : base(context) { }
 
+        public async Task<IEnumerable<Employee>?> GetEmployeesByPositionAsync(Position position)
+        {
+            return await _context.Employees
+            .Where(e => e.Position == position)
+            .ToListAsync();
+        }
+
         public async Task<Employee?> GetEmployeeWithDetailsAsync(int id)
         {
             return await _context.Set<Employee>()
                 .Include(e => e.PeoplePartner)
                 .FirstOrDefaultAsync(e => e.Id == id);
+        }
+
+        public async Task<int?> GetHRManagerIdWithLeastActiveRequestsAsync()
+        {
+            var hrManagers = await GetEmployeesByPositionAsync(Position.HRManager);
+            if(hrManagers == null || hrManagers.Count() == 0)
+            {
+                return null;
+            }
+
+            return hrManagers.OrderBy(e => _context.ApprovalRequests
+                    .Count(ar => ar.ApproverId == e.Id && ar.Status == ApprovalRequestStatus.New))
+                .Select(x => x.Id)
+                .FirstOrDefault();
         }
 
         public async Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize)
