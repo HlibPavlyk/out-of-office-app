@@ -10,6 +10,8 @@ namespace OutOfOfficeApp.CoreDomain.Enums
     {
         New,
         Submitted,
-        Canceled
+        Canceled,
+        Approved,
+        Rejected
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Azure.Core;
+using Microsoft.EntityFrameworkCore;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
@@ -22,9 +23,41 @@ namespace OutOfOfficeApp.Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<ApprovalRequestGetDTO> GetApprovalRequestByIdAsync(int id)
+        public async Task<ApprovalRequestGetDTO> GetApprovalRequestByIdAsync(int id)
         {
-            throw new NotImplementedException();
+            var request = await _unitOfWork.ApprovalRequests.GetApprovalRequestWithDetailsAsync(id);
+            if (request == null)
+            {
+                throw new ArgumentNullException("Leave requests not found");
+            }
+
+            var requestDTO = new ApprovalRequestGetDTO
+            {
+                Id = request.Id,
+                Approver = new EmployeeNameDTO
+                {
+                    Id = request.Approver.Id,
+                    FullName = request.Approver.FullName
+                },
+                LeaveRequest = new LeaveRequestGetDTO
+                {
+                    Id = request.LeaveRequest.Id,
+                    Employee = new EmployeeNameDTO
+                    {
+                        Id = request.LeaveRequest.Employee.Id,
+                        FullName = request.LeaveRequest.Employee.FullName
+                    },
+                    AbsenceReason = request.LeaveRequest.AbsenceReason,
+                    StartDate = request.LeaveRequest.StartDate,
+                    EndDate = request.LeaveRequest.EndDate,
+                    Comment = request.LeaveRequest.Comment,
+                    Status = request.LeaveRequest.Status
+                },
+                Status = request.Status,
+                Comment = request.Comment
+            };
+
+            return requestDTO;
         }
 
         public async Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(int pageNumber, int pageSize)
@@ -89,14 +122,84 @@ namespace OutOfOfficeApp.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public Task ApproveApprovalRequestAsync(int id, int issuerId)
+        public async Task ApproveApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData)
         {
-            throw new NotImplementedException();
+            await ChangeApprovalRequestStatusAsync(id, issuerData, true);
         }
 
-        public Task RejectApprovalRequestAsync(int id, int issuerId)
+
+        public async Task RejectApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData)
         {
-            throw new NotImplementedException();
+            await ChangeApprovalRequestStatusAsync(id, issuerData, false);
+        }
+
+        private async Task<bool> ChangeApprovalRequestStatusAsync(int id,
+            ApprovalRequestPostDTO issuerData, bool isApproved)
+        {
+            ApprovalRequestStatus approvalRequestStatus = ApprovalRequestStatus.Rejected;
+            LeaveRequestStatus leaveRequestStatus = LeaveRequestStatus.Rejected;
+            if (isApproved)
+            {
+                approvalRequestStatus = ApprovalRequestStatus.Approved;
+                leaveRequestStatus = LeaveRequestStatus.Approved;
+            }
+
+            var request = await _unitOfWork.ApprovalRequests.GetByIdAsync(id);
+            if (request == null)
+            {
+                throw new ArgumentNullException("Approval request not found");
+            }
+            if (request.Status != ApprovalRequestStatus.New)
+            {
+                throw new InvalidOperationException("Approval request is not in New status");
+            }
+
+            request.Status = approvalRequestStatus;
+            request.Comment = issuerData.Comment;
+
+            var leaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(request.LeaveRequestId);
+            if (leaveRequest == null)
+            {
+                throw new ArgumentNullException("Leave request not found");
+            }
+            if (leaveRequest.Status != LeaveRequestStatus.Submitted)
+            {
+                throw new InvalidOperationException("Leave request is not in Submitted status");
+            }
+
+            leaveRequest.Status = leaveRequestStatus;
+            if(isApproved)
+            {
+                await CalculateOutOfOfficeBalanceChangeAsync(leaveRequest.StartDate,
+                    leaveRequest.EndDate, leaveRequest.EmployeeId);
+            }
+
+            _unitOfWork.ApprovalRequests.Update(request);
+            _unitOfWork.LeaveRequests.Update(leaveRequest);
+            await _unitOfWork.CompleteAsync();
+
+            return isApproved;
+        }
+        
+        private async Task CalculateOutOfOfficeBalanceChangeAsync(DateOnly startDate, DateOnly endDate, int employeeId)
+        {
+            var employee = await _unitOfWork.Employees.GetByIdAsync(employeeId);
+            if (employee == null)
+            {
+                throw new InvalidOperationException("Employee not found");
+            }
+
+            int totalDays = (endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
+
+            if (totalDays <= 0 || totalDays > employee.OutOfOfficeBalance)
+            {
+                throw new InvalidOperationException("Invalid number of days");
+            }
+
+            employee.OutOfOfficeBalance -= totalDays;
+
+            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.CompleteAsync();
         }
     }
 }
