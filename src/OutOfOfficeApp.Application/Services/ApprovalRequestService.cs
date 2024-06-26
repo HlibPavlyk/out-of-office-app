@@ -28,7 +28,7 @@ namespace OutOfOfficeApp.Application.Services
             var request = await _unitOfWork.ApprovalRequests.GetApprovalRequestWithDetailsAsync(id);
             if (request == null)
             {
-                throw new ArgumentNullException("Leave requests not found");
+                throw new ArgumentNullException("Approval requests not found");
             }
 
             var requestDTO = new ApprovalRequestGetDTO
@@ -156,6 +156,10 @@ namespace OutOfOfficeApp.Application.Services
 
             request.Status = approvalRequestStatus;
             request.Comment = issuerData.Comment;
+            if(issuerData.IssuerId != null)
+            {
+                request.ApproverId = issuerData.IssuerId.Value;
+            }
 
             var leaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(request.LeaveRequestId);
             if (leaveRequest == null)
@@ -191,7 +195,7 @@ namespace OutOfOfficeApp.Application.Services
 
             int totalDays = (endDate.ToDateTime(TimeOnly.MinValue) - startDate.ToDateTime(TimeOnly.MinValue)).Days + 1;
 
-            if (totalDays <= 0 || totalDays > employee.OutOfOfficeBalance)
+            if (totalDays > employee.OutOfOfficeBalance)
             {
                 throw new InvalidOperationException("Invalid number of days");
             }
