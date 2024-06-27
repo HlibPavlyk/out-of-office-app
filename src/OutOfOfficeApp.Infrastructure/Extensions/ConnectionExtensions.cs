@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace OutOfOfficeApp.Infrastructure
+namespace OutOfOfficeApp.Infrastructure.Extensions
 {
     public static class ConnectionExtensions
     {

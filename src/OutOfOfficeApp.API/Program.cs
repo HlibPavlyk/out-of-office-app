@@ -1,7 +1,7 @@
 using OutOfOfficeApp.Application;
 using OutOfOfficeApp.Application.Services;
 using OutOfOfficeApp.Application.Services.Interfaces;
-using OutOfOfficeApp.Infrastructure;
+using OutOfOfficeApp.Infrastructure.Extensions;
 using OutOfOfficeApp.Infrastructure.Repositories;
 using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
 using System.Text.Json.Serialization;
