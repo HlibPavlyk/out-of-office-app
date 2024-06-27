@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using OutOfOfficeApp.CoreDomain.Entities;
 
@@ -18,6 +19,13 @@ namespace OutOfOfficeApp.Infrastructure
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(ApplicationDbContext).Assembly);
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<IdentityRole>().HasData(
+                new IdentityRole { Id = "1", Name = "Employee", NormalizedName = "EMPLOYEE" },
+                new IdentityRole { Id = "2", Name = "HRManager", NormalizedName = "HRMANAGER" },
+                new IdentityRole { Id = "3", Name = "ProjectManager", NormalizedName = "PROJECTMANAGER" },
+                new IdentityRole { Id = "4", Name = "Administrator", NormalizedName = "ADMINISTRATOR" }
+            );
         }
 
     }
