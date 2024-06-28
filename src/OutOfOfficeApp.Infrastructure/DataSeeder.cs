@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.Infrastructure
 {
@@ -30,7 +31,7 @@ namespace OutOfOfficeApp.Infrastructure
             }
 
             var adminRole = await _roleManager.FindByNameAsync("Administrator");
-            if(adminRole == null || adminRole.Name == null)
+            if(adminRole?.Name == null)
             {
                 throw new InvalidOperationException("No admin role found");
             }
@@ -39,7 +40,18 @@ namespace OutOfOfficeApp.Infrastructure
 
             if (!admins.Any())
             {
-                var adminUser = new User { UserName = "admin@example.com", Email = "admin@example.com" };
+                var adminEmployee = new Employee
+                {
+                    FullName = "Admin",
+                    Subdivision = Subdivision.Management,
+                    Position = Position.Administrator,
+                    Status = ActiveStatus.Active,
+                    PeoplePartnerId = 1,
+                    OutOfOfficeBalance = 100
+                };
+                
+                var adminUser = new User { UserName = "admin@example.com", Email = "admin@example.com",
+                    Employee = adminEmployee};
                 var result = await _userManager.CreateAsync(adminUser, "password");
 
                 if (result.Succeeded)
