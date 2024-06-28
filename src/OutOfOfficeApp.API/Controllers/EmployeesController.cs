@@ -23,7 +23,7 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
         [HttpGet]
-        [Authorize(Roles = "Employee")]
+        [Authorize]
         public async Task<IActionResult> GetEmployees([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
