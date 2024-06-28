@@ -7,7 +7,7 @@ using OutOfOfficeApp.CoreDomain.Entities;
 
 namespace OutOfOfficeApp.Application.Services;
 
-public class AuthService(UserManager<User> userManager) : IAuthService
+public class AuthService(UserManager<User> userManager, ITokenService tokenService) : IAuthService
 {
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto login)
     {
@@ -20,15 +20,19 @@ public class AuthService(UserManager<User> userManager) : IAuthService
             if (result)
             {
                 var roles = await userManager.GetRolesAsync(identityUser);
-                //var token = GenerateJwtToken(identityUser);
-                //var refreshToken = GenerateRefreshToken();
 
-                return new LoginResponseDto
+
+                if (identityUser.Email != null)
                 {
-                    Email = login.Email,
-                    Roles = roles.ToList(),
-                    Token = "token"
-                };
+                    var jwtToken = tokenService.CreateToken(identityUser.Email, roles);
+                
+                    return new LoginResponseDto
+                    {
+                        Email = login.Email,
+                        Roles = roles.ToList(),
+                        Token = jwtToken
+                    };
+                }
             }
         }
         throw new AuthenticationException("Invalid email or password");
