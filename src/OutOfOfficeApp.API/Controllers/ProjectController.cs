@@ -6,21 +6,14 @@ namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
     [Route("api/projects")]
-    public class ProjectController : Controller
+    public class ProjectController(IProjectService projectService) : Controller
     {
-        private readonly IProjectService _projectService;
-
-        public ProjectController(IProjectService projectService)
-        {
-            _projectService = projectService;
-        }
-
         [HttpPost]
         public async Task<IActionResult> AddProject(ProjectPostDTO project)
         {
             try
             {
-                await _projectService.AddProjectAsync(project);
+                await projectService.AddProjectAsync(project);
                 return Created();
             }
             catch (Exception e)
@@ -34,7 +27,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var projects = await _projectService.GetProjectsAsync(pageNumber, pageSize);
+                var projects = await projectService.GetProjectsAsync(pageNumber, pageSize);
                 return Ok(projects);
             }
             catch (Exception e)
@@ -48,7 +41,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var project = await _projectService.GetProjectByIdAsync(id);
+                var project = await projectService.GetProjectByIdAsync(id);
                 return Ok(project);
             }
             catch (ArgumentNullException e)
@@ -66,7 +59,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _projectService.UpdateProjectAsync(id, project);
+                await projectService.UpdateProjectAsync(id, project);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -84,7 +77,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _projectService.DeactivateProjectAsync(id);
+                await projectService.DeactivateProjectAsync(id);
                 return NoContent();
             }
             catch (ArgumentNullException e)

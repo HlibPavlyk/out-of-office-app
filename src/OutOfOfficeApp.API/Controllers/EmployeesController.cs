@@ -1,28 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
-using OutOfOfficeApp.CoreDomain.Entities;
-using System.ComponentModel;
 
 namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
     [Route("api/employees")]
-    public class EmployeesController : Controller
+    public class EmployeesController(IEmployeeService employeeService) : Controller
     {
-        private readonly IEmployeeService _employeeService;
-
-        public EmployeesController(IEmployeeService employeeService)
-        {
-            _employeeService = employeeService;
-        }
-
         [HttpPost]
         public async Task<IActionResult> AddEmployee(EmployeePostDTO employee)
         {
             try
             {
-                await _employeeService.AddEmployeeAsync(employee);
+                await employeeService.AddEmployeeAsync(employee);
                 return Created();
             }
             catch (Exception e)
@@ -35,7 +26,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var employees = await _employeeService.GetEmployeesAsync(pageNumber, pageSize);
+                var employees = await employeeService.GetEmployeesAsync(pageNumber, pageSize);
                 return Ok(employees);
             }
             catch (Exception e)
@@ -49,7 +40,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var employee = await _employeeService.GetEmployeeByIdAsync(id);
+                var employee = await employeeService.GetEmployeeByIdAsync(id);
                 return Ok(employee);
             }
             catch (ArgumentNullException e)
@@ -67,7 +58,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _employeeService.UpdateEmployeeAsync(id, employee);
+                await employeeService.UpdateEmployeeAsync(id, employee);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -85,7 +76,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _employeeService.DeactivateEmployeeAsync(id);
+                await employeeService.DeactivateEmployeeAsync(id);
                 return NoContent();
             }
             catch (ArgumentNullException e)

@@ -1,30 +1,19 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using OutOfOfficeApp.Application.DTO;
-using OutOfOfficeApp.Application.Services;
 using OutOfOfficeApp.Application.Services.Interfaces;
-using OutOfOfficeApp.CoreDomain.Entities;
-using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
     [Route("api/leave-request")]
-    public class LeaveRequestController : Controller
+    public class LeaveRequestController(ILeaveRequestService leaveRequestService) : Controller
     {
-        private readonly ILeaveRequestService _leaveRequestService;
-
-        public LeaveRequestController(ILeaveRequestService leaveRequestService)
-        {
-            _leaveRequestService = leaveRequestService;
-        }
-
         [HttpPost]
         public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestPostDTO leaveRequest)
         {
             try
             {
-                await _leaveRequestService.AddLeaveRequestAsync(leaveRequest);
+                await leaveRequestService.AddLeaveRequestAsync(leaveRequest);
                 return Created();
             }
             catch (ArgumentNullException e)
@@ -42,7 +31,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var requests = await _leaveRequestService.GetLeaveRequestsAsync(pageNumber, pageSize);
+                var requests = await leaveRequestService.GetLeaveRequestsAsync(pageNumber, pageSize);
                 return Ok(requests);
             }
             catch (Exception e)
@@ -56,7 +45,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var employee = await _leaveRequestService.GetLeaveRequestByIdAsync(id);
+                var employee = await leaveRequestService.GetLeaveRequestByIdAsync(id);
                 return Ok(employee);
             }
             catch (ArgumentNullException e)
@@ -74,7 +63,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _leaveRequestService.UpdateLeaveRequestAsync(id, leaveRequest);
+                await leaveRequestService.UpdateLeaveRequestAsync(id, leaveRequest);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -92,7 +81,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _leaveRequestService.SubmitLeaveRequestAsync(id);
+                await leaveRequestService.SubmitLeaveRequestAsync(id);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -110,7 +99,7 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await _leaveRequestService.CancelLeaveRequestAsync(id);
+                await leaveRequestService.CancelLeaveRequestAsync(id);
                 return NoContent();
             }
             catch (ArgumentNullException e)
