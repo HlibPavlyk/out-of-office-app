@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
 import {EmployeeGetModel} from "./employee/employee-get.model";
-import {HttpClient, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {EmployeePostModel} from "./employee/add-employee/employee-post.model";
 import {PagedResponse} from "./paged-response.model";
+import {CookieService} from "ngx-cookie-service";
 
 @Injectable({
   providedIn: 'root'
@@ -11,14 +12,18 @@ import {PagedResponse} from "./paged-response.model";
 export class EmployeeService {
   private apiUrl = 'https://localhost:7082/api/employees';
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private cookieService: CookieService) { }
 
   getEmployees(page: number, pageSize: number): Observable<PagedResponse<EmployeeGetModel>> {
     let params = new HttpParams();
     params = params.append('pageNumber', page.toString());
     params = params.append('pageSize', pageSize.toString());
 
-    return this.http.get<PagedResponse<EmployeeGetModel>>(this.apiUrl, { params });
+    const headers = new HttpHeaders({
+      Authorization: this.cookieService.get('Authorization')
+    });
+
+    return this.http.get<PagedResponse<EmployeeGetModel>>(this.apiUrl, { params, headers });
   }
 
   getEmployee(id: string): Observable<EmployeeGetModel> {
