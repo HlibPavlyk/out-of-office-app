@@ -4,21 +4,25 @@ import {LoginRequestModel} from "./login-request.model";
 import {AuthService} from "../auth.service";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
+import {NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
 export class LoginComponent {
   model: LoginRequestModel;
+  errorMessage: string;
 
   constructor(private authService: AuthService, private cookieService: CookieService, private router: Router) {
     this.model = {email: '', password: ''};
+    this.errorMessage = '';
   }
 
   onLoginFormSubmit() {
@@ -27,11 +31,17 @@ export class LoginComponent {
         next: (response) => {
           console.log(response);
           this.cookieService.set('Authorization', `Bearer  ${response.token}`,
-            undefined, '/', undefined, true, 'Strict')
+            undefined, '/', undefined, true, 'Strict');
+          this.authService.setUser({
+            email: this.model.email,
+            roles: response.roles
+          });
+
           this.router.navigate(['']);
         },
-        error: (error) => {
-          console.error(error);
+        error: (err) => {
+          this.errorMessage = `Incorrect login or password (${err.status})`;
+          console.error(`${this.errorMessage} - ${err.message}`);
         }
       });
   }

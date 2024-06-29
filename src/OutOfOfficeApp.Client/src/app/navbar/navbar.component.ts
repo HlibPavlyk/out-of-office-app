@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import {Router, RouterLink, RouterOutlet} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {Router, RouterLink, RouterOutlet, ɵEmptyOutletComponent} from "@angular/router";
 import {NgIf} from "@angular/common";
+import {AuthService} from "../auth.service";
+import {UserModel} from "../login/user.model";
 
 @Component({
   selector: 'app-navbar',
@@ -8,18 +10,30 @@ import {NgIf} from "@angular/common";
   imports: [
     RouterLink,
     NgIf,
-    RouterOutlet
+    RouterOutlet,
+    ɵEmptyOutletComponent
   ],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent {
-  isLoggedIn = false;
+export class NavbarComponent implements OnInit{
+  user: UserModel | undefined;
 
-  constructor(private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
-  logout() {
-    this.isLoggedIn = false;
-    this.router.navigate(['/login']);
+  ngOnInit() {
+    this.authService.user().subscribe(user => {
+      if (user) {
+        this.user = user;
+        console.log(`User is logged in as ${user.email}`);
+      }
+    });
+    this.user = this.authService.getUser();
+  }
+
+  onLogout(): void{
+    this.user = undefined;
+    this.authService.logout();
+    this.router.navigate(['login']);
   }
 }
