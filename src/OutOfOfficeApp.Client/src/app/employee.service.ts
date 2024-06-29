@@ -18,12 +18,9 @@ export class EmployeeService {
     let params = new HttpParams();
     params = params.append('pageNumber', page.toString());
     params = params.append('pageSize', pageSize.toString());
+    params = params.append('addAuth', 'true');
 
-    const headers = new HttpHeaders({
-      Authorization: this.cookieService.get('Authorization')
-    });
-
-    return this.http.get<PagedResponse<EmployeeGetModel>>(this.apiUrl, { params, headers });
+    return this.http.get<PagedResponse<EmployeeGetModel>>(this.apiUrl, { params });
   }
 
   getEmployee(id: string): Observable<EmployeeGetModel> {
