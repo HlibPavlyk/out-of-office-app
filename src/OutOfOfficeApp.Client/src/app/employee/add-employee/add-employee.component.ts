@@ -20,7 +20,7 @@ import {NgForOf, NgIf} from "@angular/common";
 export class AddEmployeeComponent implements OnInit{
   employeeForm: FormGroup;
   statuses: string[] = ['Active', 'Inactive'];
-  positions: string[] = ['Employee', 'HRManager', 'ProjectManager', 'Administrator'];
+  positions: string[] = ['Employee', 'HRManager', 'ProjectManager'];
   subdivisions: string[] = ['Development', 'Design', 'DevOps', 'Management'];
   errorMessage = '';
   isEditMode = false;
