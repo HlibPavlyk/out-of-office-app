@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
+using OutOfOfficeApp.CoreDomain.Enums;
+using OutOfOfficeApp.Infrastructure.Repositories.Interfaces;
 
 namespace OutOfOfficeApp.Application.Services;
 
-public class AuthService(UserManager<User> userManager, ITokenService tokenService) : IAuthService
+public class AuthService(UserManager<User> userManager, ITokenService tokenService, IUnitOfWork unitOfWork) : IAuthService
 {
     private const string defaultPassword = "password";
     private const string defaultEmailDomain = "@example.com";
@@ -19,7 +21,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         {
             UserName = email,
             Email = email,
-            EmployeeId = registerDto.EmployeeId
+            Employee = registerDto.Employee
         };
 
         var result = await userManager.CreateAsync(user, defaultPassword);
@@ -36,7 +38,40 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         throw new AuthenticationException("User creation failed");
     }
     
-    
+    public async Task UpdateUserByEmployee(UpdateUserDto updateUserDto)
+    {
+        var email = updateUserDto.FullName.ToLower() + defaultEmailDomain;
+        var user = await userManager.FindByEmailAsync(updateUserDto.PreviousFullName.ToLower() + defaultEmailDomain);
+
+        if (user == null)
+        {
+            throw new AuthenticationException("User not found");
+        }
+
+        user.UserName = email;
+        user.Email = email;
+
+        var currentRoles = await userManager.GetRolesAsync(user);
+
+        var removeResult = await userManager.RemoveFromRolesAsync(user, currentRoles);
+        if (!removeResult.Succeeded)
+        {
+            throw new AuthenticationException("Failed to remove user roles");
+        }
+
+        var addResult = await userManager.AddToRoleAsync(user, updateUserDto.Position.ToString());
+        if (!addResult.Succeeded)
+        {
+            throw new AuthenticationException("Failed to add user to role");
+        }
+
+        var result = await userManager.UpdateAsync(user);
+
+        if (!result.Succeeded)
+        {
+            throw new AuthenticationException("User update failed");
+        }
+    }
 
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto login)
     {
@@ -44,6 +79,12 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
 
         if (identityUser != null)
         {
+            /*var relatedEmployee = await unitOfWork.Employees.GetByIdAsync(identityUser.EmployeeId);
+            if (relatedEmployee == null || relatedEmployee.Status == ActiveStatus.Inactive)
+            {
+                throw new AuthenticationException("User is inactive");
+            }*/
+
             var result = await userManager.CheckPasswordAsync(identityUser, login.Password);
 
             if (result)

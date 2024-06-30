@@ -5,6 +5,7 @@ namespace OutOfOfficeApp.Application.Services.Interfaces;
 
 public interface IAuthService
 {
-    public Task CreateUserByEmployee(RegisterDto registerDto);
-    public Task<LoginResponseDto> LoginAsync(LoginRequestDto login);
+    Task CreateUserByEmployee(RegisterDto registerDto);
+    Task UpdateUserByEmployee(UpdateUserDto updateUserDto);
+    Task<LoginResponseDto> LoginAsync(LoginRequestDto login);
 }

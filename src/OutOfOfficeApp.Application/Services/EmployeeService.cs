@@ -76,16 +76,14 @@ namespace OutOfOfficeApp.Application.Services
                 PeoplePartnerId = employee.PeoplePartnerId,
                 OutOfOfficeBalance = employee.OutOfOfficeBalance
             };
-
-            await _unitOfWork.Employees.AddAsync(newEmployee);
-            await _unitOfWork.CompleteAsync();
             
             var userEmployee = new RegisterDto
             {
                 FullName = employee.FullName,
                 Position = employee.Position,
-                EmployeeId = newEmployee.Id
+                Employee = newEmployee
             }; 
+            
             await _authService.CreateUserByEmployee(userEmployee);
         }
 
@@ -99,6 +97,14 @@ namespace OutOfOfficeApp.Application.Services
             }
             else
             {
+                var userEmployee = new UpdateUserDto
+                {
+                    PreviousFullName = existingEmployee.FullName,
+                    FullName = employee.FullName,
+                    Position = employee.Position
+                };
+                await _authService.UpdateUserByEmployee(userEmployee);
+                
                 existingEmployee.FullName = employee.FullName;
                 existingEmployee.Subdivision = employee.Subdivision;
                 existingEmployee.Position = employee.Position;
