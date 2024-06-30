@@ -9,6 +9,35 @@ namespace OutOfOfficeApp.Application.Services;
 
 public class AuthService(UserManager<User> userManager, ITokenService tokenService) : IAuthService
 {
+    private const string defaultPassword = "password";
+    private const string defaultEmailDomain = "@example.com";
+
+    public async Task CreateUserByEmployee(RegisterDto registerDto)
+    {
+        var email = registerDto.FullName.ToLower() + defaultEmailDomain;
+        var user = new User
+        {
+            UserName = email,
+            Email = email,
+            EmployeeId = registerDto.EmployeeId
+        };
+
+        var result = await userManager.CreateAsync(user, defaultPassword);
+
+        if (result.Succeeded)
+        {
+            result = await userManager.AddToRoleAsync(user, registerDto.Position.ToString());
+            if (result.Succeeded)
+            {
+                return;
+            }
+        }
+        
+        throw new AuthenticationException("User creation failed");
+    }
+    
+    
+
     public async Task<LoginResponseDto> LoginAsync(LoginRequestDto login)
     {
         var identityUser = await userManager.FindByEmailAsync(login.Email);

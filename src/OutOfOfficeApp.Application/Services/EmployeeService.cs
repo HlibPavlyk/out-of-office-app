@@ -17,12 +17,14 @@ namespace OutOfOfficeApp.Application.Services
     public class EmployeeService : IEmployeeService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IAuthService _authService;
 
-        public EmployeeService(IUnitOfWork unitOfWork)
+        public EmployeeService(IUnitOfWork unitOfWork,IAuthService authService)
         {
             _unitOfWork = unitOfWork;
+            _authService = authService;
         }
-
+        
         public async Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize)
         {
             var employees = await _unitOfWork.Employees.GetPagedEmployeesWithDetailsAsync(pageNumber, pageSize);
@@ -31,7 +33,7 @@ namespace OutOfOfficeApp.Application.Services
                 return null;
             }
 
-            var employeeDTOs = employees.Items.Select(e => new EmployeeGetDTO
+            var employeeDtos = employees.Items.Select(e => new EmployeeGetDTO
             {
                 Id = e.Id,
                 FullName = e.FullName,
@@ -48,7 +50,7 @@ namespace OutOfOfficeApp.Application.Services
 
             var response = new PagedResponse<EmployeeGetDTO>
             {
-                Items = employeeDTOs,
+                Items = employeeDtos,
                 TotalPages = employees.TotalPages
             };
 
@@ -60,11 +62,11 @@ namespace OutOfOfficeApp.Application.Services
         public async Task AddEmployeeAsync(EmployeePostDTO employee)
         {
             var partner = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(employee.PeoplePartnerId);
-            if(partner == null)
+            if(partner is not { Position: Position.HRManager })
             {
-                throw new InvalidOperationException("Employee with that PeoplePartnerId not found");
+                throw new ArgumentNullException("People partner not found or is not HR Manager");
             }
-
+            
             var newEmployee = new Employee
             {
                 FullName = employee.FullName,
@@ -77,6 +79,14 @@ namespace OutOfOfficeApp.Application.Services
 
             await _unitOfWork.Employees.AddAsync(newEmployee);
             await _unitOfWork.CompleteAsync();
+            
+            var userEmployee = new RegisterDto
+            {
+                FullName = employee.FullName,
+                Position = employee.Position,
+                EmployeeId = newEmployee.Id
+            }; 
+            await _authService.CreateUserByEmployee(userEmployee);
         }
 
         public async Task UpdateEmployeeAsync(int id, EmployeePostDTO employee)
