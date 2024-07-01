@@ -39,4 +39,8 @@ export class EmployeeService {
   deactivateEmployee(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${id}/deactivate`, '');
   }
+
+  assignEmployeeToProject(employeeId: number, projectId: number): Observable<void> {
+    return this.http.post<void>(`${this.apiUrl}/${employeeId}/assign`, projectId);
+  }
 }

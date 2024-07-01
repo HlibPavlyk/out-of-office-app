@@ -4,6 +4,7 @@ import {EmployeeService} from "../employee.service";
 import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-employee',
@@ -28,7 +29,7 @@ export class EmployeeComponent  implements OnInit {
   pageSize = 5;
   totalPages = 0;
 
-  constructor(private employeeService: EmployeeService, private router:Router ) { }
+  constructor(private employeeService: EmployeeService, private router:Router, protected authService: AuthService ) { }
 
   ngOnInit(): void {
     this.loadEmployees(this.page);
@@ -95,6 +96,11 @@ export class EmployeeComponent  implements OnInit {
   deactivateEmployee(id: number): void {
     this.employeeService.deactivateEmployee(id).subscribe(() =>
       this.loadEmployees(this.page));
+  }
+
+  assignEmployeeToProject(id: number): void {
+    this.router.navigate(['/view-employee/', id])
+      .then(r => console.log('navigated to view-employee'));
   }
 }
 
