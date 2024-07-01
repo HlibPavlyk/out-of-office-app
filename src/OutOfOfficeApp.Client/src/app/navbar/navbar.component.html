@@ -6,22 +6,22 @@
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-        <ng-container *ngIf="hasRoles(['Administrator', 'HRManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/employees">Employees</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="hasRoles(['Administrator', 'HRManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/projects">Projects</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="hasRoles(['Administrator', 'HRManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/leave-requests">Leave Requests</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="hasRoles(['Administrator', 'HRManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/approval-requests">Approval Requests</a>
           </li>

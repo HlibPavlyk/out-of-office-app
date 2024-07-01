@@ -18,7 +18,7 @@ import {UserModel} from "../login/user.model";
 export class NavbarComponent implements OnInit{
   user: UserModel | undefined;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(protected authService: AuthService, private router: Router) { }
 
   ngOnInit() {
     this.authService.user().subscribe(user => {
@@ -37,11 +37,4 @@ export class NavbarComponent implements OnInit{
     console.log('User is logged out');
   }
 
-  hasRoles(roles: string[]): boolean {
-    if (this.user && this.user.roles){
-      return roles.some(role => this.user!.roles.includes(role));
-    } else{
-      return false;
-    }
-  }
 }

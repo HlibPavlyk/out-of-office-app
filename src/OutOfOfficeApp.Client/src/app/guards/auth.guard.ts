@@ -8,6 +8,7 @@ export const authGuard: CanActivateFn = (route, state) => {
   const cokkieService = inject(CookieService);
   const authService = inject(AuthService);
   const router = inject(Router);
+  const roles = ['Administrator','HRManager', 'ProjectManager', 'Employee'];
 
   let token = cokkieService.get('Authorization');
 
@@ -23,7 +24,7 @@ export const authGuard: CanActivateFn = (route, state) => {
       authService.logout();
       return router.createUrlTree(['/login'], { queryParams: { returnUrl: state.url } })
     } else {
-      if (user?.roles.includes('Administrator')) {
+      if (roles.some(role => user?.roles.includes(role))) {
         return true;
       } else {
         alert('You do not have permission to access this page');

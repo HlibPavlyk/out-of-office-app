@@ -6,6 +6,7 @@ import {LoginResponseModel} from "./login/login-response.model";
 import {UserModel} from "./login/user.model";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
+import {authGuard} from "./guards/auth.guard";
 
 @Injectable({
   providedIn: 'root'
@@ -49,5 +50,14 @@ export class AuthService {
     localStorage.clear();
     this.cookieService.delete('Authorization', '/');
     this.userSubject.next(undefined);
+  }
+
+  hasRoles(roles: string[]): boolean {
+    const user = this.getUser();
+    if (user && user.roles){
+      return roles.some(role => user.roles.includes(role));
+    } else {
+      return false;
+    }
   }
 }
