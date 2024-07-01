@@ -73,7 +73,7 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
 
-        [HttpPost("{id}")]
+        [HttpPost("{id}/deactivate")]
         public async Task<IActionResult> DeactivateEmployee(int id)
         {
             try

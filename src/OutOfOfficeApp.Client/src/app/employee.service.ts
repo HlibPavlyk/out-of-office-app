@@ -37,6 +37,6 @@ export class EmployeeService {
   }
 
   deactivateEmployee(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+    return this.http.post<void>(`${this.apiUrl}/${id}/deactivate`, '');
   }
 }
