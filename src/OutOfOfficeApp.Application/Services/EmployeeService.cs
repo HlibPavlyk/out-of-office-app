@@ -57,8 +57,6 @@ namespace OutOfOfficeApp.Application.Services
             return response;
         }
 
-
-
         public async Task AddEmployeeAsync(EmployeePostDTO employee)
         {
             var partner = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(employee.PeoplePartnerId);
@@ -148,6 +146,25 @@ namespace OutOfOfficeApp.Application.Services
                 await _unitOfWork.CompleteAsync();
             }
             
+        }
+
+        public async Task AssignEmployeeToProject(int id, int projectId)
+        {
+            var employee = await _unitOfWork.Employees.GetByIdAsync(id);
+            if (employee == null)
+            {
+                throw new ArgumentNullException("Employee not found");
+            }
+
+            var project = await _unitOfWork.Projects.GetByIdAsync(projectId);
+            if (project == null || project.Status == ActiveStatus.Inactive)
+            {
+                throw new ArgumentNullException("Project not found or is inactive");
+            }
+            
+            employee.ProjectId = projectId;
+            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task<EmployeeGetDTO> GetEmployeeByIdAsync(int id)

@@ -91,6 +91,25 @@ namespace OutOfOfficeApp.API.Controllers
             }
 
         }
+        
+        [HttpPost("{id}/assign")]
+        public async Task<IActionResult> DeactivateEmployee(int id, [FromBody] int projectId)
+        {
+            try
+            {
+                await employeeService.AssignEmployeeToProject(id, projectId);
+                return NoContent();
+            }
+            catch (ArgumentNullException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+        }
 
     }
 }

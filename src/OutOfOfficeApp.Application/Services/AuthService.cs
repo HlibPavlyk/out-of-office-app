@@ -16,7 +16,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
 
     public async Task CreateUserByEmployee(RegisterDto registerDto)
     {
-        var email = registerDto.FullName.ToLower() + defaultEmailDomain;
+        var email = registerDto.FullName.ToLower().Replace(" ", "") + defaultEmailDomain;
         var user = new User
         {
             UserName = email,
