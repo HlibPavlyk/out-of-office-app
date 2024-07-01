@@ -38,6 +38,13 @@ namespace OutOfOfficeApp.Infrastructure.EntityTypeConfiguration
 
             builder.Property(e => e.OutOfOfficeBalance)
                    .IsRequired();
+            
+            builder.HasOne(e => e.Project)
+                   .WithMany()
+                   .IsRequired(false)
+                   .HasForeignKey(e => e.ProjectId)
+                   .OnDelete(DeleteBehavior.Restrict);
+            
 
         }
     }

@@ -16,9 +16,10 @@ namespace OutOfOfficeApp.CoreDomain.Entities
         public ActiveStatus Status { get; set; }
         public int PeoplePartnerId { get; set; }
         public int OutOfOfficeBalance { get; set; }
+        public int? ProjectId { get; set; }
 
         public User User { get; set; }
         public Employee PeoplePartner { get; set; }
-
+        public Project Project { get; set; }
     }
 }
