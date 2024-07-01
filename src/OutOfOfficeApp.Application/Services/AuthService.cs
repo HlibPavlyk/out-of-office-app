@@ -21,7 +21,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         {
             UserName = email,
             Email = email,
-            Employee = registerDto.Employee
+            EmployeeId = registerDto.EmployeeId
         };
 
         var result = await userManager.CreateAsync(user, defaultPassword);
@@ -37,6 +37,7 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
         
         throw new AuthenticationException("User creation failed");
     }
+    
     
     public async Task UpdateUserByEmployee(UpdateUserDto updateUserDto)
     {
@@ -79,11 +80,11 @@ public class AuthService(UserManager<User> userManager, ITokenService tokenServi
 
         if (identityUser != null)
         {
-            /*var relatedEmployee = await unitOfWork.Employees.GetByIdAsync(identityUser.EmployeeId);
+            var relatedEmployee = await unitOfWork.Employees.GetByIdAsync(identityUser.EmployeeId);
             if (relatedEmployee == null || relatedEmployee.Status == ActiveStatus.Inactive)
             {
                 throw new AuthenticationException("User is inactive");
-            }*/
+            }
 
             var result = await userManager.CheckPasswordAsync(identityUser, login.Password);
 

@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity.Data;
 using OutOfOfficeApp.Application.DTO;
+using OutOfOfficeApp.CoreDomain.Entities;
 
 namespace OutOfOfficeApp.Application.Services.Interfaces;
 

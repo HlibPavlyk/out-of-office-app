@@ -62,30 +62,46 @@ namespace OutOfOfficeApp.Application.Services
         public async Task AddEmployeeAsync(EmployeePostDTO employee)
         {
             var partner = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(employee.PeoplePartnerId);
-            if(partner is not { Position: Position.HRManager })
+            if(partner == null || partner.Position != Position.HRManager)
             {
                 throw new ArgumentNullException("People partner not found or is not HR Manager");
             }
-            
-            var newEmployee = new Employee
+
+            using (var transaction = await _unitOfWork.BeginTransactionAsync())
             {
-                FullName = employee.FullName,
-                Subdivision = employee.Subdivision,
-                Position = employee.Position,
-                Status = employee.Status,
-                PeoplePartnerId = employee.PeoplePartnerId,
-                OutOfOfficeBalance = employee.OutOfOfficeBalance
-            };
-            
-            var userEmployee = new RegisterDto
-            {
-                FullName = employee.FullName,
-                Position = employee.Position,
-                Employee = newEmployee
-            }; 
-            
-            await _authService.CreateUserByEmployee(userEmployee);
+                try
+                {
+                    var newEmployee = new Employee
+                    {
+                        FullName = employee.FullName,
+                        Subdivision = employee.Subdivision,
+                        Position = employee.Position,
+                        Status = employee.Status,
+                        PeoplePartnerId = employee.PeoplePartnerId,
+                        OutOfOfficeBalance = employee.OutOfOfficeBalance
+                    };
+                    
+                    await _unitOfWork.Employees.AddAsync(newEmployee);
+                    await _unitOfWork.CompleteAsync();
+                    
+                    var userEmployee = new RegisterDto
+                    {
+                        FullName = employee.FullName,
+                        Position = employee.Position,
+                        EmployeeId = newEmployee.Id
+                    };
+
+                    await _authService.CreateUserByEmployee(userEmployee);
+                    await transaction.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            }
         }
+
 
         public async Task UpdateEmployeeAsync(int id, EmployeePostDTO employee)
         {

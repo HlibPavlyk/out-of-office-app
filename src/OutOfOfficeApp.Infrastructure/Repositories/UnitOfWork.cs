@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace OutOfOfficeApp.Infrastructure.Repositories
 {
@@ -32,6 +33,10 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
         public void Dispose()
         {
             _context.Dispose();
+        }
+        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        {
+            return await _context.Database.BeginTransactionAsync();
         }
     }
 }
