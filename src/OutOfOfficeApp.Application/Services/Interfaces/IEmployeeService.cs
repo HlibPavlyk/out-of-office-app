@@ -12,7 +12,7 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface IEmployeeService
     {
-        Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(string? userRole, int pageNumber, int pageSize);
         Task<EmployeeGetDTO> GetEmployeeByIdAsync(int id);
         Task AddEmployeeAsync(EmployeePostDTO employee);
         Task UpdateEmployeeAsync(int id, EmployeePostDTO employee);

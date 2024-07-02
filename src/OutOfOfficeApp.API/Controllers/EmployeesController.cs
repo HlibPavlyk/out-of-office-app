@@ -1,15 +1,21 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
+using OutOfOfficeApp.CoreDomain.Entities;
+using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/employees")]
-    public class EmployeesController(IEmployeeService employeeService) : Controller
+    public class EmployeesController(IEmployeeService employeeService, UserManager<User> userManager) : Controller
     {
         [HttpPost]
+        [Authorize(Roles = "HRManager, Administrator")]
         public async Task<IActionResult> AddEmployee(EmployeePostDTO employee)
         {
             try
@@ -23,12 +29,13 @@ namespace OutOfOfficeApp.API.Controllers
             }
         }
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "HRManager, Administrator, ProjectManager")]
         public async Task<IActionResult> GetEmployees([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var employees = await employeeService.GetEmployeesAsync(pageNumber, pageSize);
+                var roleClaim = User.FindFirst(ClaimTypes.Role)?.Value;
+                var employees = await employeeService.GetEmployeesAsync(roleClaim, pageNumber, pageSize);
                 return Ok(employees);
             }
             catch (Exception e)
@@ -38,6 +45,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "HRManager, Administrator, ProjectManager")]
         public async Task<IActionResult> GetEmployee(int id)
         {
             try
@@ -56,6 +64,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "HRManager, Administrator")]
         public async Task<IActionResult> UpdateEmployee(int id, EmployeePostDTO employee)
         {
             try
@@ -74,6 +83,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPost("{id}/deactivate")]
+        [Authorize(Roles = "HRManager, Administrator")]
         public async Task<IActionResult> DeactivateEmployee(int id)
         {
             try
@@ -93,6 +103,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
         
         [HttpPost("{id}/assign")]
+        [Authorize(Roles = "Administrator, ProjectManager")]
         public async Task<IActionResult> AssignEmployee(int id, [FromBody] EmployeeAssignDto assignDto)
         {
             try
@@ -112,6 +123,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
         
         [HttpPost("{id}/unassign")]
+        [Authorize(Roles = "Administrator, ProjectManager")]
         public async Task<IActionResult> UnassignEmployee(int id)
         {
             try

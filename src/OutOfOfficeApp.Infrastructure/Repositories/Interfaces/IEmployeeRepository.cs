@@ -14,6 +14,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
         Task <Employee?> GetEmployeeWithDetailsAsync(int id);
         Task<int?> GetHRManagerIdWithLeastActiveRequestsAsync();
         Task<IEnumerable<Employee>?> GetEmployeesByPositionAsync(Position position);
-        Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize,
+            bool isIncludeOnlyActive = false);
     }
 }

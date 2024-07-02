@@ -43,21 +43,32 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
                 .FirstOrDefault();
         }
 
-        public async Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<Employee>?> GetPagedEmployeesWithDetailsAsync(int pageNumber, int pageSize, bool isIncludeOnlyActive = false)
         {
-            var items = await _context.Employees
+            var query = _context.Employees
                 .Include(e => e.PeoplePartner)
+                .Where(e => e.FullName != "Admin")
+                .AsQueryable();
+
+            if (isIncludeOnlyActive)
+            {
+                query = query.Where(e => e.Status == ActiveStatus.Active);
+            }
+
+            var items = await query
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            var totalItems = await _context.Employees.CountAsync();
+            var totalItems = await query.CountAsync();
+
             if (items == null || totalItems == 0)
             {
                 return null;
             }
 
             var totalPages = (int)Math.Ceiling(totalItems / (double)pageSize);
+
             return new PagedResponse<Employee>
             {
                 Items = items,

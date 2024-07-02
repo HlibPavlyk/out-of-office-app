@@ -11,6 +11,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 
 namespace OutOfOfficeApp.Application.Services
 {
@@ -18,16 +20,24 @@ namespace OutOfOfficeApp.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IAuthService _authService;
+        private readonly UserManager<User> _userManager;
 
-        public EmployeeService(IUnitOfWork unitOfWork,IAuthService authService)
+        public EmployeeService(IUnitOfWork unitOfWork,IAuthService authService, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _authService = authService;
+            _userManager = userManager;
         }
         
-        public async Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<EmployeeGetDTO>?> GetEmployeesAsync(string? userRole, int pageNumber, int pageSize)
         {
-            var employees = await _unitOfWork.Employees.GetPagedEmployeesWithDetailsAsync(pageNumber, pageSize);
+            if (userRole == null)
+            {
+                throw new ArgumentNullException("User role not found");
+            }
+            var isProjectManager = userRole == Position.ProjectManager.ToString();
+            
+            var employees = await _unitOfWork.Employees.GetPagedEmployeesWithDetailsAsync(pageNumber, pageSize, isProjectManager);
             if (employees == null)
             {
                 return null;
@@ -110,6 +120,11 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new ArgumentNullException("Employee not found");
             }
+
+            if (existingEmployee.FullName == "Admin")
+            {
+                throw new InvalidOperationException("Admin cannot be updated");
+            }
             else
             {
                 var userEmployee = new UpdateUserDto
@@ -140,6 +155,11 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new ArgumentNullException("Employee not found");
             }
+            
+            if (employee.FullName == "Admin")
+            {
+                throw new InvalidOperationException("Admin cannot be updated");
+            }
             else
             {
                 employee.Status = ActiveStatus.Inactive;
@@ -155,6 +175,10 @@ namespace OutOfOfficeApp.Application.Services
             if (employee == null)
             {
                 throw new ArgumentNullException("Employee not found");
+            }
+            if (employee.FullName == "Admin")
+            {
+                throw new InvalidOperationException("Admin cannot be updated");
             }
 
             var project = await _unitOfWork.Projects.GetByIdAsync(projectId);
@@ -174,6 +198,10 @@ namespace OutOfOfficeApp.Application.Services
             if (employee == null)
             {
                 throw new ArgumentNullException("Employee not found");
+            }
+            if (employee.FullName == "Admin")
+            {
+                throw new InvalidOperationException("Admin cannot be updated");
             }
 
             if (employee.ProjectId == null)
