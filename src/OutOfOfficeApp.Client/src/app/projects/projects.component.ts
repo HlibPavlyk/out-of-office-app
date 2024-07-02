@@ -61,7 +61,7 @@ export class ProjectsComponent {
         switch (this.sortColumn) {
           case 'id': return compare(a.id, b.id, isAsc);
           case 'projectType': return compare(a.projectType.toLowerCase(), b.projectType.toLowerCase(), isAsc);
-          case 'partnerName': return compare(a.projectManager.fullName.toLowerCase(),
+          case 'projectManager': return compare(a.projectManager.fullName.toLowerCase(),
             b.projectManager.fullName.toLowerCase(), isAsc);
           case 'status': return compare(a.status.toLowerCase(), b.status.toLowerCase(), isAsc);
           default: return 0;
@@ -90,7 +90,7 @@ export class ProjectsComponent {
 
   onEditProject(id: number): void {
     this.router.navigate(['/edit-project/', id])
-      .then(r => console.log('navigated to edit-projec'));
+      .then(r => console.log('navigated to edit-project'));
   }
 
   onProjectDetails(id: number) {

@@ -34,32 +34,6 @@
         <i *ngIf="sortColumn === 'status'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
       'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
       </th>
-     <!-- <th (click)="onSortChange('position')" class="sortable">
-        Position
-        <i *ngIf="sortColumn === 'position'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
-        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
-      </th>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-        <th (click)="onSortChange('partnerName')" class="sortable">
-          Partner Name
-          <i *ngIf="sortColumn === 'partnerName'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
-        'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
-        </th>
-      </ng-container>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-        <th (click)="onSortChange('balance')" class="sortable">
-          OOO Balance
-          <i *ngIf="sortColumn === 'balance'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
-          'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
-        </th>
-      </ng-container>-->
-      <!--<ng-container *ngIf="!authService.hasRoles(['Administrator','HRManager'])">
-        <th (click)="onSortChange('projectId')" class="sortable">
-          Project Id
-          <i *ngIf="sortColumn === 'projectId'" class="bi" [ngClass]="{'bi-arrow-up-square-fill': sortOrder === 'asc',
-      'bi-arrow-down-square-fill': sortOrder === 'desc'}"></i>
-        </th>
-      </ng-container>-->
       <th>Actions</th>
     </tr>
     </thead>
@@ -69,19 +43,6 @@
       <td>{{ project.projectType }}</td>
       <td>{{ project.projectManager.fullName }}</td>
       <td>{{ project.status }}</td>
-      <!--<td>{{ project.position }}</td>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-        <td>{{ project.status }}</td>
-      </ng-container>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-        <td>{{ project.peoplePartner.fullName }}</td>
-      </ng-container>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-        <td>{{ project.outOfOfficeBalance }}</td>
-      </ng-container>
-      <ng-container *ngIf="!authService.hasRoles(['Administrator','HRManager'])">
-        <td>{{project.projectId == null ? 'Unassigned' : project.projectId }}</td>
-      </ng-container>-->
       <td>
         <div class="d-flex justify-content-center">
           <button (click)="onProjectDetails(project.id)" class="btn btn-sm btn-primary me-3 w-50">Details</button>
@@ -100,7 +61,7 @@
       <button (click)="onPageChange(page - 1)" [disabled]="page === 1" class="btn btn-primary w-100">
         Previous
       </button>
-      <button (click)="onPageChange(page + 1)" [disabled]="page === totalPages" class="btn btn-primary w-100">
+      <button (click)="onPageChange(page + 1)" [disabled]="page >= totalPages" class="btn btn-primary w-100">
         Next
       </button>
     </div>
