@@ -8,6 +8,9 @@ import {ViewEmployeeComponent} from "./employee/view-employee/view-employee.comp
 import {ProjectFormComponent} from "./projects/project-form/project-form.component";
 import {ProjectsComponent} from "./projects/projects.component";
 import {ProjectViewComponent} from "./projects/project-view/project-view.component";
+import {LeaveRequestFormComponent} from "./leave-requests/leave-request-form/leave-request-form.component";
+import {LeaveRequestViewComponent} from "./leave-requests/leave-request-view/leave-request-view.component";
+import {LeaveRequestsComponent} from "./leave-requests/leave-requests.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -24,5 +27,9 @@ export const routes: Routes = [
   { path: 'add-project', component: ProjectFormComponent },
   { path: 'edit-project/:id', component: ProjectFormComponent },
   { path: 'view-project/:id', component: ProjectViewComponent },
+  { path: 'leave-requests', component: LeaveRequestsComponent },
+  { path: 'add-leave-request', component: LeaveRequestFormComponent },
+  { path: 'edit-leave-request/:id', component: LeaveRequestFormComponent },
+  { path: 'view-leave-request/:id', component: LeaveRequestViewComponent },
   { path: 'login', component: LoginComponent },
 ];

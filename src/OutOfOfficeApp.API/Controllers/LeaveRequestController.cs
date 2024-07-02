@@ -5,7 +5,7 @@ using OutOfOfficeApp.Application.Services.Interfaces;
 namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
-    [Route("api/leave-request")]
+    [Route("api/leave-requests")]
     public class LeaveRequestController(ILeaveRequestService leaveRequestService) : Controller
     {
         [HttpPost]
