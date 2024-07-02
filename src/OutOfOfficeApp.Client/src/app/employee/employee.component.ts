@@ -5,6 +5,7 @@ import {NgClass, NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth.service";
+import {compare} from "../services/share.functions";
 
 @Component({
   selector: 'app-employee',
@@ -104,6 +105,3 @@ export class EmployeeComponent  implements OnInit {
   }
 }
 
-function compare(a: any, b: any, isAsc: boolean): number {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-}

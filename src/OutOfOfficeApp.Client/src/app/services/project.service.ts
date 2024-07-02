@@ -27,7 +27,6 @@ export class ProjectService {
     return this.http.get<ProjectGetModel>(`${this.apiUrl}/${id}?addAuth=true`);
   }
 
-
   addProject(project: ProjectPostDTO): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}?addAuth=true`, project);
   }
@@ -35,15 +34,8 @@ export class ProjectService {
   editProject(id: number, project: ProjectPostDTO): Observable<void> {
     return this.http.put<void>(`${this.apiUrl}/${id}?addAuth=true`, project);
   }
+
   deactivateProject(id: number): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${id}/deactivate?addAuth=true`, '');
   }
-
-  /*assignEmployeeToProject(employeeId: number, projectId: EmployeeAssignModel): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${employeeId}/assign?addAuth=true`, projectId);
-  }
-
-  unassignEmployee(employeeId: number): Observable<void>  {
-    return this.http.post<void>(`${this.apiUrl}/${employeeId}/unassign?addAuth=true`,'');
-  }*/
 }

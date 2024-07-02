@@ -7,6 +7,7 @@ import {Router, RouterLink} from "@angular/router";
 import {AuthService} from "../services/auth.service";
 import {ProjectService} from "../services/project.service";
 import {ProjectGetModel} from "./project-get.model";
+import {compare} from "../services/share.functions";
 
 @Component({
   selector: 'app-projects',
@@ -102,9 +103,5 @@ export class ProjectsComponent {
     this.projectService.deactivateProject(id).subscribe(() =>
       this.loadProjects(this.page));
   }
-}
-
-function compare(a: any, b: any, isAsc: boolean): number {
-  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 
 }
