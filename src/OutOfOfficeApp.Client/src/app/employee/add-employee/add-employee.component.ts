@@ -65,7 +65,7 @@ export class AddEmployeeComponent implements OnInit{
   }
 
   onCancel() {
-    this.router.navigate([''])
+    this.router.navigate(['/employees'])
       .then(r => console.log('returned to employees list'));
   }
 
@@ -76,7 +76,7 @@ export class AddEmployeeComponent implements OnInit{
         this.employeeService.editEmployee(this.employeeId, employeeData)
           .subscribe({
             next: () => {
-              this.router.navigate([''])
+              this.router.navigate(['/employees'])
                 .then(r => console.log('edited employee'));
             },
             error: (err) => {
@@ -88,7 +88,7 @@ export class AddEmployeeComponent implements OnInit{
         this.employeeService.addEmployee(employeeData)
           .subscribe({
             next: () => {
-              this.router.navigate([''])
+              this.router.navigate(['/employees'])
                 .then(r => console.log('added new employee'));
             },
             error: (err) => {

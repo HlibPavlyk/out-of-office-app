@@ -1,0 +1,50 @@
+<div class="container mt-4">
+  <h2>{{isEditMode? 'Edit' : 'Add New'}} Project</h2>
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+    <div class="form-group">
+      <label for="projectType">Project Type</label>
+      <select id="projectType" class="form-control" formControlName="projectType">
+        <option *ngFor="let type of projectTypes" [value]="type">{{ type }}</option>
+      </select>
+      <div *ngIf="projectForm.get('projectType')?.invalid && projectForm.get('projectType')?.touched"
+           class="text-danger">
+        Project Type is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="projectManagerId">Project Manager Id</label>
+      <input type="number" id="projectManagerId" class="form-control" formControlName="projectManagerId">
+      <div *ngIf="projectForm.get('projectManagerId')?.invalid && projectForm.get('projectManagerId')?.touched"
+           class="text-danger">
+        Project Manager Id is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="status">Status</label>
+      <select id="status" class="form-control" formControlName="status">
+        <option *ngFor="let st of statuses" [value]="st">{{ st }}</option>
+      </select>
+      <div *ngIf="projectForm.get('status')?.invalid && projectForm.get('status')?.touched"
+           class="text-danger">
+        Status is required.
+      </div>
+    </div>
+    <div class="form-group">
+      <label for="comment">Comment</label>
+      <input type="text" id="comment" class="form-control" formControlName="comment">
+      <div *ngIf="projectForm.get('comment')?.invalid && projectForm.get('comment')?.touched"
+           class="text-danger">
+        Comment is invalid.
+      </div>
+    </div>
+    <div class="mt-3">
+      <button type="submit" class="btn btn-primary me-3 " [disabled]="projectForm.invalid">
+        {{isEditMode? 'Edit' : 'Add'}} Project
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+    </div>
+  </form>
+</div>
