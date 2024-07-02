@@ -4,6 +4,7 @@ import {EmployeeGetModel} from "../employee-get.model";
 import {EmployeeService} from "../../employee.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgIf} from "@angular/common";
+import {EmployeeAssignModel} from "./employee-assign.model";
 
 @Component({
   selector: 'app-view-employee',
@@ -21,6 +22,7 @@ export class ViewEmployeeComponent {
  @Input({required: true}) employee!: EmployeeGetModel
   employeeId:number
   errorMessage = '';
+  isEmployeeAssign = false;
 
   constructor(
     private fb: FormBuilder,
@@ -41,6 +43,12 @@ export class ViewEmployeeComponent {
         this.employeeService.getEmployee(String(this.employeeId)).subscribe({
           next: (employee) => {
             this.employee = employee;
+            if (employee.projectId != null){
+              this.isEmployeeAssign = true;
+              this.employeeForm.patchValue({
+                projectId: employee.projectId
+              });
+            }
           },
           error: (err) => {
             this.errorMessage = `Error occurred (${err.status})`;
@@ -54,7 +62,7 @@ export class ViewEmployeeComponent {
   onAssign() {
        if (this.employeeForm.valid) {
          const employeeData = this.employeeForm.value;
-         this.employeeService.assignEmployeeToProject(this.employeeId, employeeData.projectId)
+         this.employeeService.assignEmployeeToProject(this.employeeId, employeeData)
            .subscribe({
              next: () => {
                this.router.navigate(['/employees'])
@@ -73,5 +81,18 @@ export class ViewEmployeeComponent {
   onCancel() {
     this.router.navigate(['/employees'])
       .then(r => console.log('returned to employees list'));
+  }
+
+  onUnassign() {
+    this.employeeService.unassignEmployee(this.employeeId).subscribe({
+      next: () => {
+        this.router.navigate(['/employees'])
+          .then(r => console.log('returned to employees list'));
+      },
+      error: (err) => {
+        this.errorMessage = `Error occurred during unassigning (${err.status})`;
+        console.error(`${this.errorMessage} - ${err.message}`);
+      }
+    });
   }
 }

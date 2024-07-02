@@ -3,46 +3,54 @@
   <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
     {{ errorMessage }}
   </div>
-  <div class="form-group">
-    <label for="id">ID</label>
-    <input type="text" id="id" class="form-control" [(ngModel)]="employee.id" readonly>
-  </div>
-  <div class="form-group">
-    <label for="fullName">Full Name</label>
-    <input type="text" id="fullName" class="form-control" [(ngModel)]="employee.fullName" readonly>
-  </div>
-  <div class="form-group">
-    <label for="subdivision">Subdivision</label>
-    <input type="text" id="subdivision" class="form-control" [(ngModel)]="employee.subdivision" readonly>
-  </div>
-  <div class="form-group">
-    <label for="position">Position</label>
-    <input type="text" id="position" class="form-control" [(ngModel)]="employee.position" readonly>
-  </div>
-  <div class="form-group">
-    <label for="status">Status</label>
-    <input type="text" id="status" class="form-control" [(ngModel)]="employee.status" readonly>
-  </div>
-  <div class="form-group">
-    <label for="peoplePartner">People Partner</label>
-    <input type="text" id="peoplePartner" class="form-control" [(ngModel)]="employee.peoplePartner.fullName" readonly>
-  </div>
-  <div class="form-group">
-    <label for="outOfOfficeBalance">Out Of Office Balance</label>
-    <input type="text" id="outOfOfficeBalance" class="form-control" [(ngModel)]="employee.outOfOfficeBalance" readonly>
-  </div>
-  <form [formGroup]="employeeForm" (ngSubmit)="onAssign()">
-    <div class="form-group">
-      <label for="projectId">Project Id</label>
-      <input type="text" id="projectId" class="form-control" formControlName="projectId">
-      <div *ngIf="employeeForm.get('projectId')?.invalid && employeeForm.get('projectId')?.touched"
-           class="text-danger">
-        Project Id is required.
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" id="id" class="form-control" [(ngModel)]="employee.id" readonly>
+      </div>
+      <div class="form-group">
+        <label for="fullName">Full Name</label>
+        <input type="text" id="fullName" class="form-control" [(ngModel)]="employee.fullName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="subdivision">Subdivision</label>
+        <input type="text" id="subdivision" class="form-control" [(ngModel)]="employee.subdivision" readonly>
+      </div>
+      <div class="form-group">
+        <label for="position">Position</label>
+        <input type="text" id="position" class="form-control" [(ngModel)]="employee.position" readonly>
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <input type="text" id="status" class="form-control" [(ngModel)]="employee.status" readonly>
+      </div>
+      <div class="form-group">
+        <label for="peoplePartner">People Partner</label>
+        <input type="text" id="peoplePartner" class="form-control" [(ngModel)]="employee.peoplePartner.fullName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="outOfOfficeBalance">Out Of Office Balance</label>
+        <input type="text" id="outOfOfficeBalance" class="form-control" [(ngModel)]="employee.outOfOfficeBalance" readonly>
       </div>
     </div>
-    <div class="mt-3">
-      <button type="submit" class="btn btn-primary me-3" [disabled]="employeeForm.invalid">Assign to Project</button>
-      <button type="button" class="btn btn-secondary" (click)="onCancel()">Back</button>
+    <div class="col-md-6">
+      <form [formGroup]="employeeForm" (ngSubmit)="onAssign()">
+        <div class="form-group">
+          <label for="projectId">Project Id</label>
+          <input type="text" id="projectId" class="form-control" formControlName="projectId">
+          <div *ngIf="employeeForm.get('projectId')?.invalid && employeeForm.get('projectId')?.touched" class="text-danger">
+            Project Id is required.
+          </div>
+        </div>
+        <div class="mt-3">
+          <button type="submit" class="btn btn-primary me-3" [disabled]="employeeForm.invalid">Assign to Project</button>
+          <ng-container *ngIf="isEmployeeAssign">
+            <button type="button" class="btn btn-warning me-3" (click)="onUnassign()">Unassign</button>
+          </ng-container>
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">Back</button>
+        </div>
+      </form>
     </div>
-  </form>
+  </div>
 </div>

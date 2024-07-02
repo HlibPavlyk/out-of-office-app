@@ -8,5 +8,6 @@ export interface EmployeeGetModel{
     status: string;
     peoplePartner: PeoplePartnerModel;
     outOfOfficeBalance: number;
+    projectId?: number;
 }
 

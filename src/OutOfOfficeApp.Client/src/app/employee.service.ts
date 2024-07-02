@@ -5,6 +5,7 @@ import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import {EmployeePostModel} from "./employee/add-employee/employee-post.model";
 import {PagedResponse} from "./paged-response.model";
 import {CookieService} from "ngx-cookie-service";
+import {EmployeeAssignModel} from "./employee/view-employee/employee-assign.model";
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,11 @@ export class EmployeeService {
     return this.http.post<void>(`${this.apiUrl}/${id}/deactivate`, '');
   }
 
-  assignEmployeeToProject(employeeId: number, projectId: number): Observable<void> {
+  assignEmployeeToProject(employeeId: number, projectId: EmployeeAssignModel): Observable<void> {
     return this.http.post<void>(`${this.apiUrl}/${employeeId}/assign`, projectId);
+  }
+
+  unassignEmployee(employeeId: number): Observable<void>  {
+    return this.http.post<void>(`${this.apiUrl}/${employeeId}/unassign`,'');
   }
 }
