@@ -18,6 +18,7 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
         Task UpdateEmployeeAsync(int id, EmployeePostDTO employee);
         Task DeactivateEmployeeAsync(int id);
         Task AssignEmployeeToProject(int id, int projectId);
+        Task UnassignEmployee(int id);
     }
 
 }

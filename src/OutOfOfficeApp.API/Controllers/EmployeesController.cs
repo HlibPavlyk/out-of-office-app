@@ -93,11 +93,30 @@ namespace OutOfOfficeApp.API.Controllers
         }
         
         [HttpPost("{id}/assign")]
-        public async Task<IActionResult> DeactivateEmployee(int id, [FromBody] int projectId)
+        public async Task<IActionResult> AssignEmployee(int id, [FromBody] EmployeeAssignDto assignDto)
         {
             try
             {
-                await employeeService.AssignEmployeeToProject(id, projectId);
+                await employeeService.AssignEmployeeToProject(id, assignDto.ProjectId);
+                return NoContent();
+            }
+            catch (ArgumentNullException e)
+            {
+                return NotFound(e.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+
+        }
+        
+        [HttpPost("{id}/unassign")]
+        public async Task<IActionResult> UnassignEmployee(int id)
+        {
+            try
+            {
+                await employeeService.UnassignEmployee(id);
                 return NoContent();
             }
             catch (ArgumentNullException e)

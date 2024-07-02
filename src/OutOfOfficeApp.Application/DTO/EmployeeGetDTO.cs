@@ -16,5 +16,6 @@ namespace OutOfOfficeApp.Application.DTO
         public ActiveStatus Status { get; set; }
         public EmployeeNameDTO PeoplePartner { get; set; }
         public int OutOfOfficeBalance { get; set; }
+        public int? ProjectId { get; set; }
     }
 }

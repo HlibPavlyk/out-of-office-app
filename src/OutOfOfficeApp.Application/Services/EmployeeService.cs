@@ -45,7 +45,8 @@ namespace OutOfOfficeApp.Application.Services
                     Id = e.PeoplePartner.Id,
                     FullName = e.PeoplePartner.FullName
                 },
-                OutOfOfficeBalance = e.OutOfOfficeBalance
+                OutOfOfficeBalance = e.OutOfOfficeBalance,
+                ProjectId = e.ProjectId
             }).ToList();
 
             var response = new PagedResponse<EmployeeGetDTO>
@@ -167,6 +168,24 @@ namespace OutOfOfficeApp.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
+        public async Task UnassignEmployee(int id)
+        {
+            var employee = await _unitOfWork.Employees.GetByIdAsync(id);
+            if (employee == null)
+            {
+                throw new ArgumentNullException("Employee not found");
+            }
+
+            if (employee.ProjectId == null)
+            {
+                throw new InvalidOperationException("Employee is already unassign");
+            }
+            
+            employee.ProjectId = null;
+            _unitOfWork.Employees.Update(employee);
+            await _unitOfWork.CompleteAsync();
+        }
+
         public async Task<EmployeeGetDTO> GetEmployeeByIdAsync(int id)
         {
             var employee = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(id);
@@ -187,7 +206,8 @@ namespace OutOfOfficeApp.Application.Services
                     Id = employee.PeoplePartner.Id,
                     FullName = employee.PeoplePartner.FullName
                 },
-                OutOfOfficeBalance = employee.OutOfOfficeBalance
+                OutOfOfficeBalance = employee.OutOfOfficeBalance,
+                ProjectId = employee.ProjectId
             };
 
             return employeeDTO;
