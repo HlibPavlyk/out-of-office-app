@@ -25,27 +25,27 @@ export class EmployeeService {
   }
 
   getEmployee(id: string): Observable<EmployeeGetModel> {
-    return this.http.get<EmployeeGetModel>(`${this.apiUrl}/${id}`);
+    return this.http.get<EmployeeGetModel>(`${this.apiUrl}/${id}?addAuth=true`);
   }
 
 
   addEmployee(employee: EmployeePostModel): Observable<void> {
-    return this.http.post<void>(this.apiUrl, employee);
+    return this.http.post<void>(`${this.apiUrl}?addAuth=true`, employee);
   }
 
   editEmployee(id: number, employee: EmployeePostModel): Observable<void> {
-    return this.http.put<void>(`${this.apiUrl}/${id}`, employee);
+    return this.http.put<void>(`${this.apiUrl}/${id}?addAuth=true`, employee);
   }
 
   deactivateEmployee(id: number): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${id}/deactivate`, '');
+    return this.http.post<void>(`${this.apiUrl}/${id}?addAuth=true/deactivate`, '');
   }
 
   assignEmployeeToProject(employeeId: number, projectId: EmployeeAssignModel): Observable<void> {
-    return this.http.post<void>(`${this.apiUrl}/${employeeId}/assign`, projectId);
+    return this.http.post<void>(`${this.apiUrl}/${employeeId}/assign?addAuth=true`, projectId);
   }
 
   unassignEmployee(employeeId: number): Observable<void>  {
-    return this.http.post<void>(`${this.apiUrl}/${employeeId}/unassign`,'');
+    return this.http.post<void>(`${this.apiUrl}/${employeeId}/unassign?addAuth=true`,'');
   }
 }
