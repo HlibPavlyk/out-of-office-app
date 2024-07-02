@@ -1,7 +1,7 @@
 import {Component, Input} from '@angular/core';
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {EmployeeGetModel} from "../employee-get.model";
-import {EmployeeService} from "../../employee.service";
+import {EmployeeService} from "../../services/employee.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {EmployeeAssignModel} from "./employee-assign.model";

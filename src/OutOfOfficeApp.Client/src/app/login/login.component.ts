@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import {FormsModule} from "@angular/forms";
 import {LoginRequestModel} from "./login-request.model";
-import {AuthService} from "../auth.service";
+import {AuthService} from "../services/auth.service";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
 import {NgIf} from "@angular/common";

@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import {Observable} from "rxjs";
-import {EmployeeGetModel} from "./employee/employee-get.model";
+import {EmployeeGetModel} from "../employee/employee-get.model";
 import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
-import {EmployeePostModel} from "./employee/add-employee/employee-post.model";
+import {EmployeePostModel} from "../employee/add-employee/employee-post.model";
 import {PagedResponse} from "./paged-response.model";
 import {CookieService} from "ngx-cookie-service";
-import {EmployeeAssignModel} from "./employee/view-employee/employee-assign.model";
+import {EmployeeAssignModel} from "../employee/view-employee/employee-assign.model";
 
 @Injectable({
   providedIn: 'root'

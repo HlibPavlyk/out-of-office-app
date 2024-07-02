@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Router, RouterLink, RouterOutlet} from "@angular/router";
 import {NgIf} from "@angular/common";
-import {AuthService} from "../auth.service";
+import {AuthService} from "../services/auth.service";
 import {UserModel} from "../login/user.model";
 
 @Component({

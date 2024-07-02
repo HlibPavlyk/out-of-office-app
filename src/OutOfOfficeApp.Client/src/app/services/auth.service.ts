@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
-import {LoginRequestModel} from "./login/login-request.model";
+import {LoginRequestModel} from "../login/login-request.model";
 import {BehaviorSubject, Observable} from "rxjs";
 import {HttpClient} from "@angular/common/http";
-import {LoginResponseModel} from "./login/login-response.model";
-import {UserModel} from "./login/user.model";
+import {LoginResponseModel} from "../login/login-response.model";
+import {UserModel} from "../login/user.model";
 import {CookieService} from "ngx-cookie-service";
 import {Router} from "@angular/router";
-import {authGuard} from "./guards/auth.guard";
+import {authGuard} from "../guards/auth.guard";
 
 @Injectable({
   providedIn: 'root'
