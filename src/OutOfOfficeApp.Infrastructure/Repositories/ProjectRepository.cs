@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.Infrastructure.Repositories
 {
@@ -21,15 +22,26 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
                 .FirstOrDefaultAsync(p => p.Id == id);
         }
 
-        public async Task<PagedResponse<Project>?> GetPagedProjectsWithDetailsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<Project>?> GetPagedProjectsWithDetailsAsync(int pageNumber, int pageSize,
+            int? isHrManagerRequest = null)
         {
-            var items = await _context.Projects
-               .Include(p => p.ProjectManager)
-               .Skip((pageNumber - 1) * pageSize)
-               .Take(pageSize)
-               .ToListAsync();
+            var query =  _context.Projects
+                .Include(p => p.ProjectManager)
+                .AsQueryable();
+            
+            if (isHrManagerRequest != null)
+            {
+                query = query.Where(p => _context.Employees
+                        .Any(e => e.ProjectId == p.Id && e.PeoplePartnerId == isHrManagerRequest))
+                    .Where(p => p.Status == ActiveStatus.Active);
+            }
 
-            var totalItems = await _context.Projects.CountAsync();
+            var items = await query
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            var totalItems = await query.CountAsync();
+
             if (items == null || totalItems == 0)
             {
                 return null;

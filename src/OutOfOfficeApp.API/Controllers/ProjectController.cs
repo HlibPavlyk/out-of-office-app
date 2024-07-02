@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 
@@ -6,9 +8,11 @@ namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
     [Route("api/projects")]
+    [Authorize]
     public class ProjectController(IProjectService projectService) : Controller
     {
         [HttpPost]
+        [Authorize(Roles = "Administrator, ProjectManager")]
         public async Task<IActionResult> AddProject(ProjectPostDTO project)
         {
             try
@@ -23,11 +27,13 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "HRManager, Administrator, ProjectManager")]
         public async Task<IActionResult> GetProjects([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
             {
-                var projects = await projectService.GetProjectsAsync(pageNumber, pageSize);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                var projects = await projectService.GetProjectsAsync(currentUser, pageNumber, pageSize);
                 return Ok(projects);
             }
             catch (Exception e)
@@ -37,6 +43,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "HRManager, Administrator, ProjectManager")]
         public async Task<IActionResult> GetProject(int id)
         {
             try
@@ -55,6 +62,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator, ProjectManager")]
         public async Task<IActionResult> UpdateProject(int id, ProjectPostDTO project)
         {
             try
@@ -73,6 +81,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPost("{id}/deactivate")]
+        [Authorize(Roles = "Administrator, ProjectManager")]
         public async Task<IActionResult> DeactivateProject(int id)
         {
             try

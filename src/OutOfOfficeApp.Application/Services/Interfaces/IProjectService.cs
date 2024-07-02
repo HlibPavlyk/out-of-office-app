@@ -10,7 +10,7 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface IProjectService
     {
-        Task<PagedResponse<ProjectGetDTO>?> GetProjectsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<ProjectGetDTO>?> GetProjectsAsync(string? userEmail, int pageNumber, int pageSize);
         Task<ProjectGetDTO> GetProjectByIdAsync(int id);
         Task AddProjectAsync(ProjectPostDTO project);
         Task UpdateProjectAsync(int id, ProjectPostDTO project);

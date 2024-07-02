@@ -11,10 +11,8 @@ namespace OutOfOfficeApp.Application.DTO
     public class ProjectPostDTO
     {
         public ProjectType ProjectType { get; set; }
-        public DateOnly StartDate { get; set; }
-        public DateOnly? EndDate { get; set; }
         public int ProjectManagerId { get; set; }
-        public string? Comment { get; set; }
         public ActiveStatus Status { get; set; }
+        public string? Comment { get; set; }
     }
 }

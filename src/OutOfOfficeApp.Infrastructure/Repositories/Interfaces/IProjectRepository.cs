@@ -11,6 +11,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     public interface IProjectRepository : IGenericRepository<Project>
     {
         Task<Project?> GetProjectWithDetailsAsync(int id);
-        Task<PagedResponse<Project>?> GetPagedProjectsWithDetailsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<Project>?> GetPagedProjectsWithDetailsAsync(int pageNumber, int pageSize,
+            int? isHrManagerRequest = null);
     }
 }

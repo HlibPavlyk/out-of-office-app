@@ -10,16 +10,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace OutOfOfficeApp.Application.Services
 {
     public class ProjectService : IProjectService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
 
-        public ProjectService(IUnitOfWork unitOfWork)
+        public ProjectService(IUnitOfWork unitOfWork,  UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<ProjectGetDTO> GetProjectByIdAsync(int id)
@@ -48,9 +51,27 @@ namespace OutOfOfficeApp.Application.Services
             return projectDTO;
         }
 
-        public async Task<PagedResponse<ProjectGetDTO>?> GetProjectsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<ProjectGetDTO>?> GetProjectsAsync(string? userEmail, int pageNumber, int pageSize)
         {
-            var projects = await _unitOfWork.Projects.GetPagedProjectsWithDetailsAsync(pageNumber, pageSize);
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }  
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User not found");             
+            } 
+            
+            var userRole = await _userManager.GetRolesAsync(user);
+            int? hrManagerId = null;
+            if (userRole.FirstOrDefault() == Position.HRManager.ToString())
+            {
+                hrManagerId = user.EmployeeId;
+            }
+            
+            var projects = await _unitOfWork.Projects.GetPagedProjectsWithDetailsAsync(pageNumber, pageSize, hrManagerId);
             if (projects == null)
             {
                 return null;
@@ -82,11 +103,6 @@ namespace OutOfOfficeApp.Application.Services
 
         public async Task AddProjectAsync(ProjectPostDTO project)
         {
-            if (project.EndDate != null && project.StartDate > project.EndDate)
-            {
-                throw new InvalidOperationException("Start date cannot be after end date");
-            }
-
             var projectManager = await _unitOfWork.Employees.GetByIdAsync(project.ProjectManagerId);
             if (projectManager == null)
             {
@@ -96,12 +112,15 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new InvalidOperationException("Employee is not Active or is not a Project Manager");
             }
+            
+            var today = DateOnly.FromDateTime(DateTime.Today);
+            var isCompleted = project.Status == ActiveStatus.Inactive;
 
             var newProject = new Project
             {
                 ProjectType = project.ProjectType,
-                StartDate = project.StartDate,
-                EndDate = project.EndDate,
+                StartDate = today,
+                EndDate = isCompleted ? today : null,
                 ProjectManagerId = project.ProjectManagerId,
                 Comment = project.Comment,
                 Status = project.Status
@@ -118,18 +137,20 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new ArgumentNullException("Project not found");
             }
-            else
-            {
-                existingProject.ProjectType = project.ProjectType;
-                existingProject.StartDate = project.StartDate;
-                existingProject.EndDate = project.EndDate;
-                existingProject.ProjectManagerId = project.ProjectManagerId;
-                existingProject.Comment = project.Comment;
-                existingProject.Status = project.Status;
 
-                _unitOfWork.Projects.Update(existingProject);
-                await _unitOfWork.CompleteAsync();
+            if (existingProject.Status != project.Status)
+            {
+                var isCompleted = project.Status == ActiveStatus.Inactive;
+                existingProject.EndDate = isCompleted ? DateOnly.FromDateTime(DateTime.Today) : null;
             }
+            
+            existingProject.ProjectType = project.ProjectType;
+            existingProject.ProjectManagerId = project.ProjectManagerId;
+            existingProject.Comment = project.Comment;
+            existingProject.Status = project.Status;
+
+            _unitOfWork.Projects.Update(existingProject);
+            await _unitOfWork.CompleteAsync();
         }
 
         public async Task DeactivateProjectAsync(int id)
@@ -146,6 +167,8 @@ namespace OutOfOfficeApp.Application.Services
             }
 
             project.Status = ActiveStatus.Inactive;
+            project.EndDate = DateOnly.FromDateTime(DateTime.Today);
+            
             _unitOfWork.Projects.Update(project);
             await _unitOfWork.CompleteAsync();
 
