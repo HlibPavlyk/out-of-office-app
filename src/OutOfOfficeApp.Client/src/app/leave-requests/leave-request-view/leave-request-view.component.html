@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-center">
+    <div class="col-md-8">
+      <h2 class="d-flex justify-content-lg-start">View Leave Request</h2>
+      <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+        {{ errorMessage }}
+      </div>
+      <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" id="id" class="form-control" [(ngModel)]="leaveRequest.id" readonly>
+      </div>
+      <div class="form-group">
+        <label for="employee">Employee</label>
+        <input type="text" id="employee" class="form-control" [(ngModel)]="leaveRequest.employee.fullName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="absenceReason">Absence Reason</label>
+        <input type="text" id="absenceReason" class="form-control" [(ngModel)]="leaveRequest.absenceReason" readonly>
+      </div>
+      <div class="form-group">
+        <label for="startDate">Start Date</label>
+        <input type="date" id="startDate" class="form-control" [(ngModel)]="leaveRequest.startDate" readonly>
+      </div>
+      <div class="form-group">
+        <label for="endDate">End Date</label>
+        <input type="date" id="endDate" class="form-control" [(ngModel)]="leaveRequest.endDate" readonly>
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <input type="text" id="status" class="form-control" [(ngModel)]="leaveRequest.status" readonly>
+      </div>
+      <div class="form-group">
+        <label for="comment">Comment</label>
+        <input type="text" id="comment" class="form-control"
+               [value]="leaveRequest.comment !== '' && leaveRequest.comment !== null ? leaveRequest.comment :
+                  'Comment is absent'" readonly>
+      </div>
+      <div class="mt-3 d-flex justify-content-end">
+        <button type="button" class="w-25 btn btn-secondary" (click)="onCancel()">Back</button>
+      </div>
+    </div>
+  </div>
+</div>
