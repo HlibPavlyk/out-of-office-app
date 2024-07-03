@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.Infrastructure.Repositories
 {
@@ -20,15 +21,36 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
                 .FirstOrDefaultAsync(lr => lr.Id == id);
         }
 
-        public async Task<PagedResponse<LeaveRequest>?> GetPagedLeaveRequestsWithDetailsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<LeaveRequest>?> GetPagedLeaveRequestsWithDetailsAsync(string? userRole,
+            int personId, int pageNumber, int pageSize)
         {
-            var items = await _context.LeaveRequests
+            var query = _context.LeaveRequests
                .Include(lr => lr.Employee)
+               .AsQueryable();
+
+            if (userRole != Position.Administrator.ToString())
+            {
+                query = query.Where(lr => lr.Status != LeaveRequestStatus.Canceled);
+            }
+            else if (userRole == Position.HRManager.ToString())
+            {
+                query = query.Where(lr => lr.Employee.PeoplePartnerId == personId);
+            }
+            else if (userRole == Position.ProjectManager.ToString())
+            {
+                query = query.Where(lr => lr.Employee.Project.ProjectManagerId == personId);
+            }
+            else if (userRole == Position.Employee.ToString())
+            {
+                query = query.Where(lr => lr.EmployeeId == personId);
+            }
+            
+            var items = await query
                .Skip((pageNumber - 1) * pageSize)
                .Take(pageSize)
                .ToListAsync();
 
-            var totalItems = await _context.LeaveRequests.CountAsync();
+            var totalItems = await query.CountAsync();
             if (items == null || totalItems == 0)
             {
                 return null;

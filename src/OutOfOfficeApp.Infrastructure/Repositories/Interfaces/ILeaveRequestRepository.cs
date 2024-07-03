@@ -11,6 +11,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     public interface ILeaveRequestRepository : IGenericRepository<LeaveRequest>
     {
         Task<LeaveRequest?> GetLeaveRequestWithDetailsAsync(int id);
-        Task<PagedResponse<LeaveRequest>?> GetPagedLeaveRequestsWithDetailsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<LeaveRequest>?> GetPagedLeaveRequestsWithDetailsAsync(string? userRole, int personId,
+            int pageNumber, int pageSize);
     }
 }

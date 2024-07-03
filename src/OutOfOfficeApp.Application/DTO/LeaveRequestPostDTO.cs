@@ -14,7 +14,6 @@ namespace OutOfOfficeApp.Application.DTO
 {
     public class LeaveRequestPostDTO
     {
-        public int EmployeeId { get; set; }
         public AbsenceReason AbsenceReason { get; set; }
 
         [SwaggerSchema(Format = "yyyy-MM-dd")]

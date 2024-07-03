@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 
@@ -6,14 +8,17 @@ namespace OutOfOfficeApp.API.Controllers
 {
     [ApiController]
     [Route("api/leave-requests")]
+    [Authorize]
     public class LeaveRequestController(ILeaveRequestService leaveRequestService) : Controller
     {
         [HttpPost]
+        [Authorize(Roles = "Administrator, ProjectManager, Employee")]
         public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestPostDTO leaveRequest)
         {
             try
             {
-                await leaveRequestService.AddLeaveRequestAsync(leaveRequest);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                await leaveRequestService.AddLeaveRequestAsync(currentUser, leaveRequest);
                 return Created();
             }
             catch (ArgumentNullException e)
@@ -31,7 +36,8 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                var requests = await leaveRequestService.GetLeaveRequestsAsync(pageNumber, pageSize);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                var requests = await leaveRequestService.GetLeaveRequestsAsync(currentUser, pageNumber, pageSize);
                 return Ok(requests);
             }
             catch (Exception e)
@@ -63,7 +69,8 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await leaveRequestService.UpdateLeaveRequestAsync(id, leaveRequest);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                await leaveRequestService.UpdateLeaveRequestAsync(id, currentUser, leaveRequest);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -81,7 +88,8 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await leaveRequestService.SubmitLeaveRequestAsync(id);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                await leaveRequestService.SubmitLeaveRequestAsync(currentUser, id);
                 return NoContent();
             }
             catch (ArgumentNullException e)
@@ -99,7 +107,8 @@ namespace OutOfOfficeApp.API.Controllers
         {
             try
             {
-                await leaveRequestService.CancelLeaveRequestAsync(id);
+                var currentUser = User.FindFirst(ClaimTypes.Email)?.Value;
+                await leaveRequestService.CancelLeaveRequestAsync(currentUser, id);
                 return NoContent();
             }
             catch (ArgumentNullException e)

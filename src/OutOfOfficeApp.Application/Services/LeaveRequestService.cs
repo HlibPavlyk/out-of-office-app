@@ -1,4 +1,5 @@
-﻿using OutOfOfficeApp.Application.DTO;
+﻿using Microsoft.AspNetCore.Identity;
+using OutOfOfficeApp.Application.DTO;
 using OutOfOfficeApp.Application.Services.Interfaces;
 using OutOfOfficeApp.CoreDomain.Entities;
 using OutOfOfficeApp.CoreDomain.Enums;
@@ -11,11 +12,14 @@ namespace OutOfOfficeApp.Application.Services
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IApprovalRequestService _approvalRequestService;
+        private readonly UserManager<User> _userManager;
 
-        public LeaveRequestService(IUnitOfWork unitOfWork, IApprovalRequestService approvalRequestService)
+        public LeaveRequestService(IUnitOfWork unitOfWork, IApprovalRequestService approvalRequestService,
+            UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
             _approvalRequestService = approvalRequestService;
+            _userManager = userManager;
         }
 
         public async Task<LeaveRequestGetDTO> GetLeaveRequestByIdAsync(int id)
@@ -44,9 +48,24 @@ namespace OutOfOfficeApp.Application.Services
             return requestDTO;
         }
 
-        public async Task<PagedResponse<LeaveRequestGetDTO>?> GetLeaveRequestsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<LeaveRequestGetDTO>?> GetLeaveRequestsAsync(string? userEmail, int pageNumber, int pageSize)
         {
-            var requests = await _unitOfWork.LeaveRequests.GetPagedLeaveRequestsWithDetailsAsync(pageNumber, pageSize);
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User not found");             
+            }
+
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            
+            var requests = await _unitOfWork.LeaveRequests.GetPagedLeaveRequestsWithDetailsAsync(userRole,
+                user.EmployeeId, pageNumber, pageSize);
             if (requests == null)
             {
                 return null;
@@ -76,22 +95,26 @@ namespace OutOfOfficeApp.Application.Services
             return response;
         }
 
-        public async  Task AddLeaveRequestAsync(LeaveRequestPostDTO request)
+        public async  Task AddLeaveRequestAsync(string? userEmail, LeaveRequestPostDTO request)
         {
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
             if(request.StartDate > request.EndDate)
             {
                 throw new InvalidOperationException("Start date cannot be after end date");
             }
-
-            var issuer = await _unitOfWork.Employees.GetEmployeeWithDetailsAsync(request.EmployeeId);
-            if (issuer == null)
-            {
-                throw new ArgumentNullException("Employee with that id not found");
-            }
-
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User not found");             
+            } 
+        
             var newLeaveRequest = new LeaveRequest
             {
-                EmployeeId = request.EmployeeId,
+                EmployeeId = user.EmployeeId,
                 AbsenceReason = request.AbsenceReason,
                 StartDate = request.StartDate,
                 EndDate = request.EndDate,
@@ -101,13 +124,34 @@ namespace OutOfOfficeApp.Application.Services
             await _unitOfWork.LeaveRequests.AddAsync(newLeaveRequest);
             await _unitOfWork.CompleteAsync();
         }
-        public async  Task UpdateLeaveRequestAsync(int id, LeaveRequestPostDTO employee)
+        public async  Task UpdateLeaveRequestAsync(int id, string? userEmail, LeaveRequestPostDTO request)
         {
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            if(request.StartDate > request.EndDate)
+            {
+                throw new InvalidOperationException("Start date cannot be after end date");
+            }
+            
             var existingLeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id);
-
             if (existingLeaveRequest == null)
             {
                 throw new ArgumentNullException("Leave requests not found");
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            if (user.EmployeeId != existingLeaveRequest.EmployeeId && userRole != Position.Administrator.ToString())
+            {
+                throw new InvalidOperationException("That is not current employee request");
             }
 
             if (existingLeaveRequest.Status != LeaveRequestStatus.New)
@@ -116,24 +160,40 @@ namespace OutOfOfficeApp.Application.Services
             }
             else
             {
-                existingLeaveRequest.EmployeeId = employee.EmployeeId;
-                existingLeaveRequest.AbsenceReason = employee.AbsenceReason;
-                existingLeaveRequest.StartDate = employee.StartDate;
-                existingLeaveRequest.EndDate = employee.EndDate;
-                existingLeaveRequest.Comment = employee.Comment;
+                existingLeaveRequest.AbsenceReason = request.AbsenceReason;
+                existingLeaveRequest.StartDate = request.StartDate;
+                existingLeaveRequest.EndDate = request.EndDate;
+                existingLeaveRequest.Comment = request.Comment;
 
                 _unitOfWork.LeaveRequests.Update(existingLeaveRequest);
                 await _unitOfWork.CompleteAsync();
             }
         }
 
-        public async Task SubmitLeaveRequestAsync(int id)
+        public async Task SubmitLeaveRequestAsync(string? userEmail, int id)
         {
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            
             var existingLeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id);
-
             if (existingLeaveRequest == null)
             {
                 throw new ArgumentNullException("Leave requests not found");
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            if (user.EmployeeId != existingLeaveRequest.EmployeeId && userRole != Position.Administrator.ToString())
+            {
+                throw new InvalidOperationException("That is not current employee request");
             }
 
             if (existingLeaveRequest.Status != LeaveRequestStatus.New)
@@ -150,42 +210,63 @@ namespace OutOfOfficeApp.Application.Services
 
             await _approvalRequestService.AddApprovalRequestAsync(id);
         }
-        public async Task CancelLeaveRequestAsync(int id)
+        public async Task CancelLeaveRequestAsync(string? userEmail, int id)
         {
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            
             var existingLeaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(id);
-
             if (existingLeaveRequest == null)
             {
                 throw new ArgumentNullException("Leave requests not found");
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            if (user.EmployeeId != existingLeaveRequest.EmployeeId && userRole != Position.Administrator.ToString())
+            {
+                throw new InvalidOperationException("That is not current employee request");
             }
 
             if (existingLeaveRequest.Status == LeaveRequestStatus.Canceled)
             {
                 throw new InvalidOperationException("Cannot cancel leave request that is already canceled");
             }
-            else
+           
+            if (existingLeaveRequest.Status == LeaveRequestStatus.Submitted)
             {
-                if (existingLeaveRequest.Status == LeaveRequestStatus.Submitted)
+                var existingApprovalRequest = await _unitOfWork.ApprovalRequests
+                    .GetApprovalRequestByLeaveRequestIdAsync(id);
+
+                if (existingApprovalRequest == null)
                 {
-                    var existingApprovalRequest = await _unitOfWork.ApprovalRequests
-                        .GetApprovalRequestByLeaveRequestIdAsync(id);
-
-                    if (existingApprovalRequest == null)
-                    {
-                        throw new ArgumentNullException("Approval request not found");
-                    }
-
-                    existingApprovalRequest.Status = ApprovalRequestStatus.Rejected;
-
-                    _unitOfWork.ApprovalRequests.Update(existingApprovalRequest);
-                    await _unitOfWork.CompleteAsync();
+                    throw new ArgumentNullException("Approval request not found");
                 }
 
-                existingLeaveRequest.Status = LeaveRequestStatus.Canceled;
+                existingApprovalRequest.Status = ApprovalRequestStatus.Rejected;
 
-                _unitOfWork.LeaveRequests.Update(existingLeaveRequest);
+                _unitOfWork.ApprovalRequests.Update(existingApprovalRequest);
                 await _unitOfWork.CompleteAsync();
             }
+
+            if (existingLeaveRequest.Status == LeaveRequestStatus.Approved)
+            {
+                throw new InvalidOperationException("Cannot cancel approved leave request"); 
+            }
+
+            existingLeaveRequest.Status = LeaveRequestStatus.Canceled;
+
+            _unitOfWork.LeaveRequests.Update(existingLeaveRequest);
+            await _unitOfWork.CompleteAsync();
         }
+        
     }
 }

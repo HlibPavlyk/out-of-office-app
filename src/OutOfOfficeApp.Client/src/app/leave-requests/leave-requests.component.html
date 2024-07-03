@@ -4,7 +4,7 @@
       <input type="text" [(ngModel)]="search" (ngModelChange)="onSearchChange($event)" class="form-control"
              placeholder="Search by leave request id">
     </div>
-    <ng-container *ngIf="authService.hasRoles(['Administrator','Employee'])">
+    <ng-container *ngIf="authService.hasRoles(['Employee'])">
       <div class="col-md-6 d-flex justify-content-end">
         <button class="btn btn-primary" [routerLink]="['/add-leave-request']">Leave Request</button>
       </div>
@@ -60,7 +60,8 @@
             <ng-container *ngIf="request.status === 'New'">
               <button (click)="onEditLeaveRequest(request.id)" class="btn btn-sm btn-warning me-3 w-50">Edit</button>
             </ng-container>
-            <button (click)="onCancelLeaveRequest(request.id)" class="btn btn-sm btn-danger w-50">Cancel</button>
+            <button (click)="onCancelLeaveRequest(request.id)" class="btn btn-sm btn-danger w-50"
+                  [disabled]="request.status === 'Approved'">Cancel</button>
           </ng-template>
         </div>
       </td>
