@@ -34,9 +34,9 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
         {
             _context.Dispose();
         }
-        public async Task<IDbContextTransaction> BeginTransactionAsync()
+        /*public async Task<IDbContextTransaction> BeginTransactionAsync()
         {
             return await _context.Database.BeginTransactionAsync();
-        }
+        }*/
     }
 }

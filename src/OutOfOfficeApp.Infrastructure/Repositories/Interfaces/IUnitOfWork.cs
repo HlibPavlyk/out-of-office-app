@@ -14,6 +14,6 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
         IApprovalRequestRepository ApprovalRequests { get; }
         IProjectRepository Projects { get; }
         Task CompleteAsync();
-        Task<IDbContextTransaction> BeginTransactionAsync();
+       // Task<IDbContextTransaction> BeginTransactionAsync();
     }
 }

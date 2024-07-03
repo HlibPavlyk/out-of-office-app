@@ -76,10 +76,10 @@ namespace OutOfOfficeApp.Application.Services
                 throw new ArgumentNullException("People partner not found or is not HR Manager");
             }
 
-            using (var transaction = await _unitOfWork.BeginTransactionAsync())
+            /*using (var transaction = await _unitOfWork.BeginTransactionAsync())
             {
                 try
-                {
+                {*/
                     var newEmployee = new Employee
                     {
                         FullName = employee.FullName,
@@ -101,14 +101,14 @@ namespace OutOfOfficeApp.Application.Services
                     };
 
                     await _authService.CreateUserByEmployee(userEmployee);
-                    await transaction.CommitAsync();
-                }
+                   // await transaction.CommitAsync();
+                /*}
                 catch (Exception)
                 {
                     await transaction.RollbackAsync();
                     throw;
                 }
-            }
+            }*/
         }
 
 
