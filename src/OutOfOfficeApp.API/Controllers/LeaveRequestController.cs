@@ -12,7 +12,7 @@ namespace OutOfOfficeApp.API.Controllers
     public class LeaveRequestController(ILeaveRequestService leaveRequestService) : Controller
     {
         [HttpPost]
-        [Authorize(Roles = "Administrator, ProjectManager, Employee")]
+        [Authorize(Roles = "Employee")]
         public async Task<IActionResult> CreateLeaveRequest([FromBody] LeaveRequestPostDTO leaveRequest)
         {
             try
@@ -32,6 +32,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpGet]
+        [Authorize(Roles = "Administrator, ProjectManager, Employee, HRManager")]
         public async Task<IActionResult> GetLeaveRequests([FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 10)
         {
             try
@@ -47,6 +48,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpGet("{id}")]
+        [Authorize(Roles = "Administrator, ProjectManager, Employee, HRManager")]
         public async Task<IActionResult> GetLeaveRequest(int id)
         {
             try
@@ -65,6 +67,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPut("{id}")]
+        [Authorize(Roles = "Administrator, Employee")]
         public async Task<IActionResult> UpdateLeaveRequest(int id, [FromBody] LeaveRequestPostDTO leaveRequest)
         {
             try
@@ -84,6 +87,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPost("{id}/submit")]
+        [Authorize(Roles = "Administrator, Employee")]
         public async Task<IActionResult> SubmitLeaveRequest(int id)
         {
             try
@@ -103,6 +107,7 @@ namespace OutOfOfficeApp.API.Controllers
         }
 
         [HttpPost("{id}/cancel")]
+        [Authorize(Roles = "Administrator, Employee")]
         public async Task<IActionResult> CancelLeaveRequest(int id)
         {
             try
