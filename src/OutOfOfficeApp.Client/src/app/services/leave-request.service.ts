@@ -3,7 +3,7 @@ import {Observable} from "rxjs";
 import {HttpClient, HttpParams} from '@angular/common/http';
 import {PagedResponse} from "./paged-response.model";
 import {LeaveRequestGetModel} from "../leave-requests/leave-request-get.model";
-import {LeaveRequestPostModel} from "../leave-requests/leave-request-view/leave-request-post.model";
+import {LeaveRequestPostModel} from "../leave-requests/leave-request-form/leave-request-post.model";
 
 @Injectable({
   providedIn: 'root'

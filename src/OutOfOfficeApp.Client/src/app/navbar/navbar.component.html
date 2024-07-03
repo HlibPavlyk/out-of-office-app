@@ -11,17 +11,17 @@
             <a class="nav-link" routerLink="/employees">Employees</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager', 'Employee'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/projects">Projects</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager', 'Employee'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/leave-requests">Leave Requests</a>
           </li>
         </ng-container>
-        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager'])">
+        <ng-container *ngIf="authService.hasRoles(['Administrator', 'HRManager', 'ProjectManager', 'Employee'])">
           <li class="nav-item">
             <a class="nav-link" routerLink="/approval-requests">Approval Requests</a>
           </li>

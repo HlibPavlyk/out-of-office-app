@@ -22,7 +22,6 @@ export class ProjectFormComponent {
   projectTypes: string[] = ['Finance', 'Marketing', 'IT','Administration'];
   errorMessage = '';
   isEditMode = false;
-  isViewMode = false;
   projectId = 1;
 
   constructor(
@@ -34,8 +33,6 @@ export class ProjectFormComponent {
     this.projectForm = this.fb.group({
       projectType: ['', Validators.required],
       projectManagerId: [Validators.min(1), Validators.required],
-      startDate: [''],
-      endDate: [''],
       comment: [null, Validators.nullValidator],
       status: ['', Validators.required]
     });
@@ -50,8 +47,6 @@ export class ProjectFormComponent {
           next: (project) => this.projectForm.patchValue({
             projectType: project.projectType,
             projectManagerId: project.projectManager.id,
-            startDate: project.startDate,
-            endDate: project.endDate,
             comment: project.comment,
             status: project.status
           }),
