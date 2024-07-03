@@ -1,0 +1,64 @@
+<div class="container mt-4">
+  <h2>View Approval Request</h2>
+  <div *ngIf="errorMessage" class="alert alert-danger" role="alert">
+    {{ errorMessage }}
+  </div>
+  <div class="row">
+    <div class="col-md-6">
+      <div class="form-group">
+        <label for="id">ID</label>
+        <input type="text" id="id" class="form-control" [(ngModel)]="approvalRequest.id" readonly>
+      </div>
+      <div class="form-group">
+        <label for="approver">Assigned Approver</label>
+        <input type="text" id="approver" class="form-control" [(ngModel)]="approvalRequest.approver.fullName" readonly>
+      </div>
+      <div class="form-group">
+        <label for="leaveRequestId">Leave Request Id</label>
+        <input type="text" id="leaveRequestId" class="form-control" [(ngModel)]="approvalRequest.leaveRequestId" readonly>
+      </div>
+      <div class="form-group">
+        <label for="status">Status</label>
+        <input type="text" id="status" class="form-control" [(ngModel)]="approvalRequest.status" readonly>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <form [formGroup]="approvalRequestForm" (ngSubmit)="onApprove()">
+        <div class="form-group">
+          <label for="comment">Comment</label>
+          <ng-container *ngIf="approvalRequest.status === 'New'; else noFormControl">
+            <textarea id="comment" class="form-control" formControlName="comment" rows="5"
+                      [readonly]="approvalRequest.status !== 'New'">
+            </textarea>
+          </ng-container>
+          <ng-template #noFormControl>
+            <textarea id="comment" class="form-control" rows="5"
+                      [readonly]="true"[value]="approvalRequest.comment == null ||
+                      approvalRequest.comment == '' ? 'Comment is absent' : approvalRequest.comment">
+            </textarea>
+          </ng-template>
+          <div *ngIf="approvalRequestForm.get('comment')?.invalid && approvalRequestForm.get('comment')?.touched"
+               class="text-danger">
+            Comment is invalid.
+          </div>
+        </div>
+        <div class="mt-3 row">
+          <ng-container *ngIf="authService.hasRoles(['HRManager', 'ProjectManager', 'Administrator'])">
+            <div class="col-4 d-flex">
+              <button type="submit" class="btn btn-primary w-100" [disabled]="approvalRequest.status != 'New'">
+                {{approvalRequest.status === 'Approved' ? 'Approved' : 'Approve'}}</button>
+            </div>
+            <div class="col-4 d-flex">
+              <button type="button" class="btn btn-warning w-100" [disabled]="approvalRequest.status != 'New'" (click)="onReject()">
+                {{approvalRequest.status === 'Rejected' ? 'Rejected' : 'Reject'}}</button>
+            </div>
+          </ng-container>
+          <div class="col-4 d-flex">
+            <button type="button" class="btn btn-secondary w-100" (click)="onCancel()">Back</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>
