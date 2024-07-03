@@ -11,6 +11,8 @@ import {ProjectViewComponent} from "./projects/project-view/project-view.compone
 import {LeaveRequestFormComponent} from "./leave-requests/leave-request-form/leave-request-form.component";
 import {LeaveRequestViewComponent} from "./leave-requests/leave-request-view/leave-request-view.component";
 import {LeaveRequestsComponent} from "./leave-requests/leave-requests.component";
+import {ApprovalRequestsComponent} from "./approval-requests/approval-requests.component";
+import {ApprovalRequestViewComponent} from "./approval-requests/approval-request-view/approval-request-view.component";
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
@@ -31,5 +33,7 @@ export const routes: Routes = [
   { path: 'add-leave-request', component: LeaveRequestFormComponent },
   { path: 'edit-leave-request/:id', component: LeaveRequestFormComponent },
   { path: 'view-leave-request/:id', component: LeaveRequestViewComponent },
+  { path: 'approval-requests', component: ApprovalRequestsComponent },
+  { path: 'view-approval-request/:id', component: ApprovalRequestViewComponent },
   { path: 'login', component: LoginComponent },
 ];
