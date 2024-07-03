@@ -8,8 +8,8 @@ namespace OutOfOfficeApp.CoreDomain.Enums
 {
     public enum Position
     {
-        Employee,
         HRManager,
+        Employee,
         ProjectManager,
         Administrator
     }

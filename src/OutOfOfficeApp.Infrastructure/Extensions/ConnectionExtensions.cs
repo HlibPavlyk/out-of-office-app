@@ -9,8 +9,7 @@ namespace OutOfOfficeApp.Infrastructure.Extensions
         public static void AddDbConnection(this IServiceCollection service, IConfiguration configuration)
         {
             IServiceCollection serviceCollection = service.AddDbContext<ApplicationDbContext>(options =>
-            options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
-
+            options.UseInMemoryDatabase("_"));
         }
     }
 }

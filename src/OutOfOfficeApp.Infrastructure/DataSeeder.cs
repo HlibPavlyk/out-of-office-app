@@ -24,39 +24,47 @@ namespace OutOfOfficeApp.Infrastructure
         {
             if (!_roleManager.Roles.Any())
             {
-                await _roleManager.CreateAsync(new IdentityRole("Employee"));
-                await _roleManager.CreateAsync(new IdentityRole("HRManager"));
-                await _roleManager.CreateAsync(new IdentityRole("ProjectManager"));
-                await _roleManager.CreateAsync(new IdentityRole("Administrator"));
+                foreach (var role in Enum.GetValues(typeof(Position)))
+                {
+                    var roleString = role.ToString();
+                    await _roleManager.CreateAsync(new IdentityRole(roleString));
+                }
             }
 
-            var adminRole = await _roleManager.FindByNameAsync("Administrator");
-            if(adminRole?.Name == null)
+            foreach (var role in Enum.GetValues(typeof(Position)))
             {
-                throw new InvalidOperationException("No admin role found");
-            }
+                var roleString = role.ToString();
+                var usersInRole = await _userManager.GetUsersInRoleAsync(roleString);
 
-            var admins = await _userManager.GetUsersInRoleAsync(adminRole.Name);
-
-            if (!admins.Any())
-            {
-                var adminEmployee = new Employee
+                if (!usersInRole.Any())
                 {
-                    FullName = "Admin",
-                    Subdivision = Subdivision.Management,
-                    Position = Position.Administrator,
-                    Status = ActiveStatus.Active,
-                    PeoplePartnerId = 1,
-                    OutOfOfficeBalance = 100
-                };
-                
-                var adminUser = new User { UserName = "admin@example.com", Email = "admin@example.com",
-                    Employee = adminEmployee};
-                var result = await _userManager.CreateAsync(adminUser, "password");
+                    var employee = new Employee
+                    {
+                        FullName = roleString,
+                        Subdivision = Subdivision.Management,
+                        Position = (Position)role,
+                        Status = ActiveStatus.Active,
+                        PeoplePartnerId = 1,
+                        OutOfOfficeBalance = 100
+                    };
 
-                if (result.Succeeded)
-                {
-                    await _userManager.AddToRoleAsync(adminUser, "Administrator");
+                    var user = new User
+                    {
+                        UserName = $"{roleString.ToLower()}@example.com",
+                        Email = $"{roleString.ToLower()}@example.com",
+                        Employee = employee
+                    };
+
+                    var result = await _userManager.CreateAsync(user, "password");
+
+                    if (result.Succeeded)
+                    {
+                        await _userManager.AddToRoleAsync(user, roleString);
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException($"Failed to create user for role {roleString}: {string.Join(", ", result.Errors.Select(e => e.Description))}");
+                    }
                 }
             }
         }
