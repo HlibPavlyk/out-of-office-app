@@ -37,7 +37,7 @@ export class AddEmployeeComponent implements OnInit{
       subdivision: ['', Validators.required],
       position: ['', Validators.required],
       status: ['', Validators.required],
-      peoplePartnerId: [1, Validators.required],
+      peoplePartnerId: [Validators.min(1), Validators.required],
       outOfOfficeBalance: [0, [Validators.required, Validators.min(0)]],
     });
   }

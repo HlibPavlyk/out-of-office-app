@@ -5,12 +5,12 @@ import {AuthService} from "../services/auth.service";
 import {jwtDecode} from "jwt-decode";
 
 export const authGuard: CanActivateFn = (route, state) => {
-  const cokkieService = inject(CookieService);
+  const cookieService = inject(CookieService);
   const authService = inject(AuthService);
   const router = inject(Router);
-  const roles = ['Administrator','HRManager', 'ProjectManager', 'Employee'];
+  const roles = route.data['roles'] as Array<string>;
 
-  let token = cokkieService.get('Authorization');
+  let token = cookieService.get('Authorization');
 
   if (token) {
     token = token.replace('Bearer ', '');

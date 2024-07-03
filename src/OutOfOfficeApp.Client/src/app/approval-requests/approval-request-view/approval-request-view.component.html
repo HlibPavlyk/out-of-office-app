@@ -28,7 +28,7 @@
           <label for="comment">Comment</label>
           <ng-container *ngIf="approvalRequest.status === 'New'; else noFormControl">
             <textarea id="comment" class="form-control" formControlName="comment" rows="5"
-                      [readonly]="approvalRequest.status !== 'New'">
+                      [readonly]="approvalRequest.status !== 'New' || authService.hasRoles(['Employee'])">
             </textarea>
           </ng-container>
           <ng-template #noFormControl>

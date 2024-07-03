@@ -36,7 +36,9 @@
     <tr *ngFor="let request of filteredApprovalRequests">
       <td>{{ request.id }}</td>
       <td>{{ request.approver.fullName }}</td>
-      <td>{{ request.leaveRequestId }}</td>
+      <td>
+        <a [routerLink]="['/view-leave-request', request.leaveRequestId]" class="btn btn-warning">{{ request.leaveRequestId }}</a>
+      </td>
       <td>{{ request.status }}</td>
       <td>
         <div class="d-flex justify-content-center">

@@ -41,7 +41,9 @@
     <tr *ngFor="let project of filteredProjects">
       <td>{{ project.id }}</td>
       <td>{{ project.projectType }}</td>
-      <td>{{ project.projectManager.fullName }}</td>
+      <td>
+        <a [routerLink]="['/view-employee', project.projectManager.id]" class="btn btn-warning">{{ project.projectManager.fullName }}</a>
+      </td>
       <td>{{ project.status }}</td>
       <td>
         <div class="d-flex justify-content-center">

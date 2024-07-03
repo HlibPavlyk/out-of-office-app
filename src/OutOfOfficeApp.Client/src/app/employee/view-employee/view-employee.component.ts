@@ -5,6 +5,7 @@ import {EmployeeService} from "../../services/employee.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {NgIf} from "@angular/common";
 import {EmployeeAssignModel} from "./employee-assign.model";
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-view-employee',
@@ -28,7 +29,8 @@ export class ViewEmployeeComponent {
     private fb: FormBuilder,
     private employeeService: EmployeeService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    protected authService: AuthService
   ) {
     this.employeeForm = this.fb.group({
       projectId: ['', Validators.required],

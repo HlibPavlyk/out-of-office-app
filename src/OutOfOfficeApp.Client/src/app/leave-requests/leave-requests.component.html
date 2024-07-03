@@ -45,7 +45,9 @@
     <tbody>
     <tr *ngFor="let request of filteredLeaveRequests">
       <td>{{ request.id }}</td>
-      <td>{{ request.employee.fullName }}</td>
+      <td>
+        <a [routerLink]="['/view-employee', request.employee.id]" class="btn btn-warning">{{ request.employee.fullName }}</a>
+      </td>
       <td>{{ request.startDate | date: 'yyyy-MM-dd' }}</td>
       <td>{{ request.endDate | date: 'yyyy-MM-dd' }}</td>
       <td>{{ request.status }}</td>

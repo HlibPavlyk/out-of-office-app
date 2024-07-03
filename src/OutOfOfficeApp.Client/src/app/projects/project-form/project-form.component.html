@@ -34,7 +34,7 @@
     </div>
     <div class="form-group">
       <label for="comment">Comment</label>
-      <input type="text" id="comment" class="form-control" formControlName="comment">
+      <textarea id="comment" class="form-control" formControlName="comment" rows="5"></textarea>
       <div *ngIf="projectForm.get('comment')?.invalid && projectForm.get('comment')?.touched"
            class="text-danger">
         Comment is invalid.

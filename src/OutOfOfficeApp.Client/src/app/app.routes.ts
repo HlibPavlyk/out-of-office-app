@@ -16,24 +16,90 @@ import {ApprovalRequestViewComponent} from "./approval-requests/approval-request
 
 export const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: 'home', component: HomeComponent },
   {
     path: 'employees',
     component: EmployeeComponent,
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager'] }
   },
-  { path: 'home', component: HomeComponent },
-  { path: 'add-employee', component: AddEmployeeComponent },
-  { path: 'edit-employee/:id', component: AddEmployeeComponent },
-  { path: 'view-employee/:id', component: ViewEmployeeComponent },
-  { path: 'projects', component: ProjectsComponent },
-  { path: 'add-project', component: ProjectFormComponent },
-  { path: 'edit-project/:id', component: ProjectFormComponent },
-  { path: 'view-project/:id', component: ProjectViewComponent },
-  { path: 'leave-requests', component: LeaveRequestsComponent },
-  { path: 'add-leave-request', component: LeaveRequestFormComponent },
-  { path: 'edit-leave-request/:id', component: LeaveRequestFormComponent },
-  { path: 'view-leave-request/:id', component: LeaveRequestViewComponent },
-  { path: 'approval-requests', component: ApprovalRequestsComponent },
-  { path: 'view-approval-request/:id', component: ApprovalRequestViewComponent },
+  {
+    path: 'add-employee',
+    component: AddEmployeeComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager'] }
+  },
+  {
+    path: 'edit-employee/:id',
+    component: AddEmployeeComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager'] }
+  },
+  {
+    path: 'view-employee/:id',
+    component: ViewEmployeeComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager'] }
+  },
+  {
+    path: 'projects',
+    component: ProjectsComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
+  {
+    path: 'add-project',
+    component: ProjectFormComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'ProjectManager'] }
+  },
+  {
+    path: 'edit-project/:id',
+    component: ProjectFormComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'ProjectManager'] }
+  },
+  {
+    path: 'view-project/:id',
+    component: ProjectViewComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
+  {
+    path: 'leave-requests',
+    component: LeaveRequestsComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
+  {
+    path: 'add-leave-request',
+    component: LeaveRequestFormComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Employee'] }
+  },
+  {
+    path: 'edit-leave-request/:id',
+    component: LeaveRequestFormComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'Employee'] }
+  },
+  {
+    path: 'view-leave-request/:id',
+    component: LeaveRequestViewComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
+  {
+    path: 'approval-requests',
+    component: ApprovalRequestsComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
+  {
+    path: 'view-approval-request/:id',
+    component: ApprovalRequestViewComponent,
+    canActivate: [authGuard],
+    data: { roles: ['Administrator', 'HRManager', 'ProjectManager', 'Employee'] }
+  },
   { path: 'login', component: LoginComponent },
 ];

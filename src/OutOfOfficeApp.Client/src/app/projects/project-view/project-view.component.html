@@ -32,6 +32,8 @@
       </div>
       <div class="form-group">
         <label for="comment">Comment</label>
+        <textarea id="comment" class="form-control" formControlName="comment" rows="5"></textarea>
+        
         <input type="text" id="comment" class="form-control"
                [value]="project.comment !== '' && project.comment !== null ? project.comment :
                   'Comment is absent'" readonly>

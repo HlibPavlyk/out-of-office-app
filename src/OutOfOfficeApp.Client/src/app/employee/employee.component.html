@@ -75,27 +75,32 @@
       <td>{{ employee.status }}</td>
       </ng-container>
       <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
-      <td>{{ employee.peoplePartner.fullName }}</td>
+      <td>
+        <a [routerLink]="['/view-employee', employee.peoplePartner.id]" class="btn btn-warning">{{ employee.peoplePartner.fullName }}</a>
+      </td>
       </ng-container>
       <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
       <td>{{ employee.outOfOfficeBalance }}</td>
       </ng-container>
       <ng-container *ngIf="authService.hasRoles(['Administrator','ProjectManager'])">
-        <td>{{employee.projectId == null ? 'Unassigned' : employee.projectId }}</td>
+        <td>
+          <ng-container *ngIf="employee.projectId; else unassigned">
+            <a [routerLink]="['/view-project', employee.projectId]" class="btn btn-warning">{{ employee.projectId }}</a>
+          </ng-container>
+          <ng-template #unassigned>Unassigned</ng-template>
+        </td>
       </ng-container>
-      <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager']); else showProjectManagerOptions">
       <td>
         <div class="d-flex justify-content-center">
-          <button (click)="editEmployee(employee.id)" class="btn btn-sm btn-primary me-3">Edit</button>
-          <button (click)="deactivateEmployee(employee.id)" class="btn btn-sm btn-danger">Deactivate</button>
+          <ng-container *ngIf="authService.hasRoles(['Administrator','ProjectManager'])">
+            <button (click)="assignEmployeeToProject(employee.id)" class="btn btn-sm btn-primary me-3">Project Assignment</button>
+          </ng-container>
+          <ng-container *ngIf="authService.hasRoles(['Administrator','HRManager'])">
+            <button (click)="editEmployee(employee.id)" class="btn btn-sm btn-primary me-3">Edit</button>
+            <button (click)="deactivateEmployee(employee.id)" class="btn btn-sm btn-danger">Deactivate</button>
+          </ng-container>
         </div>
       </td>
-      </ng-container>
-      <ng-template #showProjectManagerOptions>
-        <div class="d-flex justify-content-center">
-          <button (click)="assignEmployeeToProject(employee.id)" class="btn btn-sm btn-primary w-50 me-3">Project Assignment</button>
-        </div>
-      </ng-template>
     </tr>
     </tbody>
   </table>
