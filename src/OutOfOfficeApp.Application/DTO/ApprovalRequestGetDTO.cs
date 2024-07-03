@@ -12,7 +12,7 @@ namespace OutOfOfficeApp.Application.DTO
     {
         public int Id { get; set; }
         public EmployeeNameDTO Approver { get; set; }
-        public LeaveRequestGetDTO LeaveRequest { get; set; }
+        public int LeaveRequestId { get; set; }
         public ApprovalRequestStatus Status { get; set; }
         public string? Comment { get; set; }
     }

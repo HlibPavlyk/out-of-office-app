@@ -10,10 +10,10 @@ namespace OutOfOfficeApp.Application.Services.Interfaces
 {
     public interface IApprovalRequestService
     {
-        Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(string? userEmail, int pageNumber, int pageSize);
         Task<ApprovalRequestGetDTO> GetApprovalRequestByIdAsync(int id);
         Task AddApprovalRequestAsync(int leaveRequestId);
-        Task RejectApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData);
-        Task ApproveApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData);
+        Task RejectApprovalRequestAsync(int id, string? userEmail, ApprovalRequestPostDTO issuerData);
+        Task ApproveApprovalRequestAsync(int id, string? userEmail, ApprovalRequestPostDTO issuerData);
     }
 }

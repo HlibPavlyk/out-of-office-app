@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OutOfOfficeApp.CoreDomain.Enums;
 
 namespace OutOfOfficeApp.Infrastructure.Repositories
 {
@@ -23,22 +24,38 @@ namespace OutOfOfficeApp.Infrastructure.Repositories
         public async Task<ApprovalRequest?> GetApprovalRequestWithDetailsAsync(int id)
         {
             return await _context.ApprovalRequests
-                .Include(ar => ar.LeaveRequest)
-                    .ThenInclude(lr => lr.Employee)
                 .Include(ar => ar.Approver)
+                .Include(ar => ar.LeaveRequest)
+                    .ThenInclude(e => e.Employee)
+                        .ThenInclude(p => p.Project)
                 .FirstOrDefaultAsync(ar => ar.Id == id);
         }
 
-        public async Task<PagedResponse<ApprovalRequest>?> GetPagedApprovalRequestsWithDetailsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<ApprovalRequest>?> GetPagedApprovalRequestsWithDetailsAsync(string? userRole,
+            int personId, int pageNumber, int pageSize)
         {
-            var items = await _context.ApprovalRequests
-                .Include(ar => ar.LeaveRequest)
+            var query = _context.ApprovalRequests
                 .Include(ar => ar.Approver)
-                .Skip((pageNumber - 1) * pageSize)
+                .Include(ar => ar.LeaveRequest)
+                    .ThenInclude(e => e.Employee)
+                        .ThenInclude(p => p.Project)
+                .OrderBy(ar => ar.Status == ApprovalRequestStatus.New)
+                .AsQueryable();
+                
+            if (userRole == Position.HRManager.ToString())
+            {
+                query = query.Where(ar => ar.ApproverId == personId);
+            }
+            else if (userRole == Position.ProjectManager.ToString())
+            {
+                query = query.Where(ar => ar.LeaveRequest.Employee.Project.ProjectManagerId == personId);
+            }
+            
+            var items = await query.Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            var totalItems = await _context.ApprovalRequests.CountAsync();
+            var totalItems = await query.CountAsync();
             if (items == null || totalItems == 0)
             {
                 return null;

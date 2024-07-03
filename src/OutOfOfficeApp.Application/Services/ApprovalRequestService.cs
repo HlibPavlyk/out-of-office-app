@@ -11,16 +11,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Identity;
 
 namespace OutOfOfficeApp.Application.Services
 {
     public class ApprovalRequestService : IApprovalRequestService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<User> _userManager;
 
-        public ApprovalRequestService(IUnitOfWork unitOfWork)
+        public ApprovalRequestService(IUnitOfWork unitOfWork, UserManager<User> userManager)
         {
             _unitOfWork = unitOfWork;
+            _userManager = userManager;
         }
 
         public async Task<ApprovalRequestGetDTO> GetApprovalRequestByIdAsync(int id)
@@ -31,7 +34,7 @@ namespace OutOfOfficeApp.Application.Services
                 throw new ArgumentNullException("Approval requests not found");
             }
 
-            var requestDTO = new ApprovalRequestGetDTO
+            var requestDto = new ApprovalRequestGetDTO
             {
                 Id = request.Id,
                 Approver = new EmployeeNameDTO
@@ -39,36 +42,38 @@ namespace OutOfOfficeApp.Application.Services
                     Id = request.Approver.Id,
                     FullName = request.Approver.FullName
                 },
-                LeaveRequest = new LeaveRequestGetDTO
-                {
-                    Id = request.LeaveRequest.Id,
-                    Employee = new EmployeeNameDTO
-                    {
-                        Id = request.LeaveRequest.Employee.Id,
-                        FullName = request.LeaveRequest.Employee.FullName
-                    },
-                    AbsenceReason = request.LeaveRequest.AbsenceReason,
-                    StartDate = request.LeaveRequest.StartDate,
-                    EndDate = request.LeaveRequest.EndDate,
-                    Comment = request.LeaveRequest.Comment,
-                    Status = request.LeaveRequest.Status
-                },
+                LeaveRequestId = request.LeaveRequestId,
                 Status = request.Status,
                 Comment = request.Comment
             };
 
-            return requestDTO;
+            return requestDto;
         }
 
-        public async Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(int pageNumber, int pageSize)
+        public async Task<PagedResponse<ApprovalRequestGetDTO>?> GetApprovalRequestsAsync(string? userEmail,
+            int pageNumber, int pageSize)
         {
-            var requests = await _unitOfWork.ApprovalRequests.GetPagedApprovalRequestsWithDetailsAsync(pageNumber, pageSize);
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            
+            var requests = await _unitOfWork.ApprovalRequests.GetPagedApprovalRequestsWithDetailsAsync(userRole, user.EmployeeId, pageNumber, pageSize);
             if (requests == null)
             {
                 return null;
             }
 
-            var requestDTOs = requests.Items.Select(ar => new ApprovalRequestGetDTO
+            var requestDtos = requests.Items.Select(ar => new ApprovalRequestGetDTO
             {
                 Id = ar.Id,
                 Approver = new EmployeeNameDTO
@@ -76,27 +81,14 @@ namespace OutOfOfficeApp.Application.Services
                     Id = ar.Approver.Id,
                     FullName = ar.Approver.FullName
                 },
-                LeaveRequest = new LeaveRequestGetDTO
-                {
-                    Id = ar.LeaveRequest.Id,
-                    Employee = new EmployeeNameDTO
-                    {
-                        Id = ar.LeaveRequest.Employee.Id,
-                        FullName = ar.LeaveRequest.Employee.FullName
-                    },
-                    AbsenceReason = ar.LeaveRequest.AbsenceReason,
-                    StartDate = ar.LeaveRequest.StartDate,
-                    EndDate = ar.LeaveRequest.EndDate,
-                    Comment = ar.LeaveRequest.Comment,
-                    Status = ar.LeaveRequest.Status
-                },
+                LeaveRequestId = ar.LeaveRequestId, 
                 Status = ar.Status,
                 Comment = ar.Comment
             }).ToList();
 
             var response = new PagedResponse<ApprovalRequestGetDTO>
             {
-                Items = requestDTOs,
+                Items = requestDtos,
                 TotalPages = requests.TotalPages
             };
 
@@ -122,19 +114,19 @@ namespace OutOfOfficeApp.Application.Services
             await _unitOfWork.CompleteAsync();
         }
 
-        public async Task ApproveApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData)
+        public async Task ApproveApprovalRequestAsync(int id, string? userEmail, ApprovalRequestPostDTO issuerData)
         {
-            await ChangeApprovalRequestStatusAsync(id, issuerData, true);
+            await ChangeApprovalRequestStatusAsync(id, userEmail, issuerData, true);
         }
 
 
-        public async Task RejectApprovalRequestAsync(int id, ApprovalRequestPostDTO issuerData)
+        public async Task RejectApprovalRequestAsync(int id, string? userEmail, ApprovalRequestPostDTO issuerData)
         {
-            await ChangeApprovalRequestStatusAsync(id, issuerData, false);
+            await ChangeApprovalRequestStatusAsync(id, userEmail, issuerData, false);
         }
 
-        private async Task<bool> ChangeApprovalRequestStatusAsync(int id,
-            ApprovalRequestPostDTO issuerData, bool isApproved)
+        private async Task ChangeApprovalRequestStatusAsync(int id,
+            string? userEmail, ApprovalRequestPostDTO issuerData, bool isApproved)
         {
             ApprovalRequestStatus approvalRequestStatus = ApprovalRequestStatus.Rejected;
             LeaveRequestStatus leaveRequestStatus = LeaveRequestStatus.Rejected;
@@ -143,8 +135,23 @@ namespace OutOfOfficeApp.Application.Services
                 approvalRequestStatus = ApprovalRequestStatus.Approved;
                 leaveRequestStatus = LeaveRequestStatus.Approved;
             }
+            
+            if (userEmail == null)                                                   
+            {                                                                       
+                throw new ArgumentNullException("User email not found");             
+            }
+            
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                throw new InvalidOperationException("User not found");
+            }
+            
+            var userRoles = await _userManager.GetRolesAsync(user);
+            var userRole = userRoles.FirstOrDefault();
+            
 
-            var request = await _unitOfWork.ApprovalRequests.GetByIdAsync(id);
+            var request = await _unitOfWork.ApprovalRequests.GetApprovalRequestWithDetailsAsync(id);
             if (request == null)
             {
                 throw new ArgumentNullException("Approval request not found");
@@ -153,13 +160,16 @@ namespace OutOfOfficeApp.Application.Services
             {
                 throw new InvalidOperationException("Approval request is not in New status");
             }
+            
+            if (request.ApproverId != user.EmployeeId && userRole != "Administrator"
+                && request.LeaveRequest.Employee.Project.ProjectManagerId != user.EmployeeId)
+            {
+                throw new InvalidOperationException("User is not authorized to approve/reject this request");
+            }
 
             request.Status = approvalRequestStatus;
             request.Comment = issuerData.Comment;
-            if(issuerData.IssuerId != null)
-            {
-                request.ApproverId = issuerData.IssuerId.Value;
-            }
+            request.ApproverId = user.EmployeeId;
 
             var leaveRequest = await _unitOfWork.LeaveRequests.GetByIdAsync(request.LeaveRequestId);
             if (leaveRequest == null)
@@ -181,8 +191,6 @@ namespace OutOfOfficeApp.Application.Services
             _unitOfWork.ApprovalRequests.Update(request);
             _unitOfWork.LeaveRequests.Update(leaveRequest);
             await _unitOfWork.CompleteAsync();
-
-            return isApproved;
         }
         
         private async Task CalculateOutOfOfficeBalanceChangeAsync(DateOnly startDate, DateOnly endDate, int employeeId)

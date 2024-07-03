@@ -12,6 +12,7 @@ namespace OutOfOfficeApp.Infrastructure.Repositories.Interfaces
     {
         Task<ApprovalRequest?> GetApprovalRequestWithDetailsAsync(int id);
         Task<ApprovalRequest?> GetApprovalRequestByLeaveRequestIdAsync(int id);
-        Task<PagedResponse<ApprovalRequest>?> GetPagedApprovalRequestsWithDetailsAsync(int pageNumber, int pageSize);
+        Task<PagedResponse<ApprovalRequest>?> GetPagedApprovalRequestsWithDetailsAsync(string? userRole, int personId,
+            int pageNumber, int pageSize);
     }
 }

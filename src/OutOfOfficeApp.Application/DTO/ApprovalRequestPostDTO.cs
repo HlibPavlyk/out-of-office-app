@@ -8,7 +8,6 @@ namespace OutOfOfficeApp.Application.DTO
 {
     public class ApprovalRequestPostDTO
     {
-        public int? IssuerId { get; set; }
         public string? Comment { get; set; }
     }
 }
